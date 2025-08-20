@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Gestão - MindSoccer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+
+<body class="text-gray-200">
+
+    <div id="login-container" class="min-h-screen flex items-center justify-center fade-in">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center text-orange-400 mb-6">Painel de Gestão</h1>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="gestor-name" class="block text-sm font-medium text-gray-300">Seu Nome</label>
+                    <input type="text" id="gestor-name" required class="w-full mt-1 bg-gray-700 border-gray-600 rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                    <input type="email" id="email" required class="w-full mt-1 bg-gray-700 border-gray-600 rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300">Senha</label>
+                    <input type="password" id="password" required class="w-full mt-1 bg-gray-700 border-gray-600 rounded-md px-3 py-2">
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md">Entrar</button>
+                <p id="login-error" class="text-red-400 text-sm text-center"></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container" class="container mx-auto p-4 md:p-8 hidden">
+        <header class="flex justify-between items-start mb-8 pb-4 border-b border-gray-700">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-100">Painel de Gestão e Análise</h1>
+                <p id="user-display" class="text-sm text-blue-400"></p>
+            </div>
+            <div>
+                <button id="add-lead-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md"> + Adicionar Lead </button>
+            </div>
+            <div class="text-right">
+                <p class="font-semibold text-sm text-gray-300">MindSoccer</p>
+                <p class="text-xs text-gray-400">Connection & Performance</p>
+                <button id="logout-btn" class="mt-2 text-xs bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded">Sair</button>
+            </div>
+        </header>
+
+        <main id="main-content" class="hidden">
+
+            <section class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8 fade-in">
+                <h2 class="text-xl font-semibold mb-4 text-orange-400">Mural de Avisos</h2>
+                <form id="aviso-form" class="space-y-4">
+                    <textarea id="aviso-mensagem" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2" placeholder="Digite sua mensagem para todos os captadores..." required></textarea>
+                    <div class="flex justify-end">
+                        <button type="submit" id="aviso-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition">Enviar Aviso</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8 fade-in">
+                <h2 class="text-xl font-semibold mb-4 text-orange-400">Filtros de Análise</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label for="filtro-captador" class="text-sm font-medium text-gray-400">Captador</label>
+                        <select id="filtro-captador" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded-md px-3 py-2">
+                            <option value="todos">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtro-ano-nascimento" class="text-sm font-medium text-gray-400">Ano de Nascimento</label>
+                        <input type="number" id="filtro-ano-nascimento" placeholder="Ex: 2003" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded-md px-3 py-2">
+                    </div>
+                    <div>
+                        <label for="filtro-data-inicio" class="text-sm font-medium text-gray-400">Data Início</label>
+                        <input type="date" id="filtro-data-inicio" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded-md px-3 py-2">
+                    </div>
+                    <div>
+                        <label for="filtro-data-fim" class="text-sm font-medium text-gray-400">Data Fim</label>
+                        <input type="date" id="filtro-data-fim" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded-md px-3 py-2">
+                    </div>
+                </div>
+            </section>
+
+            <div class="mb-6 border-b border-gray-700">
+                <nav class="flex space-x-4">
+                    <button id="tab-dashboard" class="py-2 px-1 text-orange-400 border-b-2 border-orange-400 font-semibold">Dashboard</button>
+                    <button id="tab-gestor-leads" class="py-2 px-1 text-gray-400 hover:text-orange-400">Leads da Gestão</button>
+                    <button id="tab-atletas" class="py-2 px-1 text-gray-400 hover:text-orange-400">Atletas Duplicados</button>
+                    <button id="tab-projecao" class="py-2 px-1 text-gray-400 hover:text-orange-400">Projeções</button>
+                    <button id="tab-desempenho" class="py-2 px-1 text-gray-400 hover:text-orange-400">Desempenho</button>
+                    <button id="tab-backup" class="py-2 px-1 text-gray-400 hover:text-orange-400">Backup</button>
+                </nav>
+            </div>
+
+            <div id="dashboard-view">
+
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8 fade-in">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Métricas de Eficiência</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-sm text-gray-400">Contatos por Captação de Sucesso</p>
+                            <p id="metric-contatos-por-sucesso" class="text-2xl font-bold text-gray-100 mt-1">--</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 fade-in">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
+                        <h2 class="text-xl font-semibold mb-4 text-orange-400">Próximas Avaliações <span id="count-agenda" class="text-base font-normal"></span></h2>
+                        <div id="agenda-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
+                        <h2 class="text-xl font-semibold mb-4 text-orange-400">Reuniões Agendadas <span id="count-reunioes" class="text-base font-normal"></span></h2>
+                        <div id="reunioes-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
+                        <h2 class="text-xl font-semibold mb-4 text-orange-400">Captações Aguardando <span id="count-aguardando" class="text-base font-normal"></span></h2>
+                        <div id="aguardando-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold text-orange-400">Ranking</h2>
+                            <select id="ranking-filtro" class="bg-gray-700 border-gray-600 rounded-md text-sm p-1">
+                                <option value="taxaSucesso">Eficiência</option>
+                                <option value="totalCaptacoes">Volume</option>
+                                <option value="receitaGerada">Receita</option>
+                            </select>
+                        </div>
+                        <div id="ranking-container" class="max-h-80 overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                </section>
+            
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-orange-400">Registros Detalhados <span id="count-registros" class="text-base font-normal"></span></h2>
+                        <div class="w-1/3">
+                            <input type="text" id="busca-registros" placeholder="Buscar por nome..." class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button id="status-todos" data-status="todos" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-orange-600 text-gray-200">Todos</button>
+                        <button id="status-aguardando" data-status="Aguardando" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-yellow-500 text-gray-200">Aguardando</button>
+                        <button id="status-reuniao" data-status="Reunião Agendada" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-cyan-500 text-gray-200">Reunião Agendada</button>
+                        <button id="status-sucesso" data-status="Sucesso" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-green-500 text-gray-200">Sucesso</button>
+                        <button id="status-falha" data-status="Falha" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-red-500 text-gray-200">Falha</button>
+                        <button id="status-standby" data-status="Standby" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-indigo-500 text-gray-200">Standby</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-900">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Atleta</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Posição</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Telefone</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Captador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Detalhes / Próxima Ação</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-dados" class="bg-gray-800 divide-y divide-gray-700"></tbody>
+                        </table>
+                        <p id="tabela-vazia" class="text-gray-500 text-center py-8">Nenhum dado encontrado.</p>
+                    </div>
+                    <div id="paginacao-container" class="flex justify-between items-center mt-4 text-sm">
+                        <button id="btn-anterior" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md disabled:opacity-50">Anterior</button>
+                        <span id="info-pagina"></span>
+                        <button id="btn-proxima" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md disabled:opacity-50">Próxima</button>
+                    </div>
+                </section>
+            </div>
+            <div id="gestor-leads-view" class="hidden">
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8 fade-in">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Métricas de Leads da Gestão</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-sm text-gray-400">Total de Leads Enviados</p>
+                            <p id="metric-gestor-leads-total" class="text-2xl font-bold text-gray-100 mt-1">--</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-sm text-gray-400">Reuniões por Captação de Sucesso</p>
+                            <p id="metric-reunioes-por-sucesso" class="text-2xl font-bold text-gray-100 mt-1">--</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-sm text-gray-400">Taxa de Sucesso (Leads da Gestão)</p>
+                            <p id="metric-taxa-sucesso-gestor" class="text-2xl font-bold text-gray-100 mt-1">--</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-orange-400">Leads Atribuídos pela Gestão <span id="count-gestor-registros" class="text-base font-normal"></span></h2>
+                        <div class="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4 w-full md:w-2/3">
+                            <input type="text" id="busca-registros-gestor" placeholder="Buscar por nome..." class="w-full md:w-1/2 bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm">
+                            <div class="w-full md:w-1/2">
+                                <label for="filtro-captador-gestor" class="sr-only">Captador</label>
+                                <select id="filtro-captador-gestor" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm">
+                                    <option value="todos">Todos os Captadores</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button id="status-gestor-todos" data-status="todos" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-orange-600 text-gray-200">Todos</button>
+                        <button id="status-gestor-aguardando" data-status="Aguardando" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-yellow-500 text-gray-200">Aguardando</button>
+                        <button id="status-gestor-reuniao" data-status="Reuniao Agendada" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-cyan-500 text-gray-200">Reunião Agendada</button>
+                        <button id="status-gestor-sucesso" data-status="Sucesso" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-green-500 text-gray-200">Sucesso</button>
+                        <button id="status-gestor-falha" data-status="Falha" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-red-500 text-gray-200">Falha</button>
+                        <button id="status-gestor-standby" data-status="Standby" class="status-filter-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-indigo-500 text-gray-200">Standby</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-900">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Atleta</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Posição</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Telefone</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Captador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Detalhes / Próxima Ação</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-gestor-leads" class="bg-gray-800 divide-y divide-gray-700"></tbody>
+                        </table>
+                        <p id="tabela-gestor-vazia" class="text-gray-500 text-center py-8">Nenhum dado encontrado.</p>
+                    </div>
+                    <div id="paginacao-gestor-container" class="flex justify-between items-center mt-4 text-sm">
+                        <button id="btn-gestor-anterior" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md disabled:opacity-50">Anterior</button>
+                        <span id="info-gestor-pagina"></span>
+                        <button id="btn-gestor-proxima" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md disabled:opacity-50">Próxima</button>
+                    </div>
+                </section>
+            </div>
+            <div id="atletas-view" class="hidden">
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <h2 class="text-xl font-semibold text-orange-400 mb-4">Lista de Atletas Duplicados</h2>
+                    <p class="text-sm text-gray-400 mb-6">Apenas atletas com múltiplos registros no sistema são exibidos aqui. Clique para ver o histórico e gerenciar os contatos.</p>
+                    <div id="lista-atletas-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+                    <p id="atletas-vazio" class="text-gray-500 text-center py-8">Nenhum atleta duplicado encontrado com os filtros atuais.</p>
+                </section>
+            </div>
+            <div id="projection-view" class="hidden">
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Projeção de Captações</h2>
+                    <div class="text-center bg-gray-900 p-6 rounded-lg">
+                        <p class="text-lg text-gray-300">Com base no histórico, a projeção de captações com <span class="text-green-400 font-semibold">sucesso</span> para o próximo mês é de:</p>
+                        <p id="projection-result" class="text-5xl font-bold text-orange-400 my-4">--</p>
+                        <p id="projection-info" class="text-sm text-gray-500">Cálculo baseado na média mensal de captações bem-sucedidas.</p>
+                    </div>
+                </section>
+            </div>
+            <div id="desempenho-view" class="hidden">
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Pontos de Melhoria por Captador</h2>
+                    <p class="text-sm text-gray-400 mb-6">Análise das principais categorias de falha para direcionar o treinamento e suporte.</p>
+                    <div id="desempenho-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </section>
+            </div>
+            <div id="backup-view" class="hidden">
+                <section class="bg-gray-800 p-6 rounded-lg shadow-xl fade-in">
+                    <h2 class="text-xl font-semibold text-orange-400 mb-6">Backup e Gerenciamento de Dados</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-100">Exportar Dados</h3>
+                            <p class="text-sm text-gray-400 mt-1">Clique no botão abaixo para baixar um arquivo JSON contendo todos os registros de captações. Guarde este arquivo em um local seguro.</p>
+                            <button id="export-data-btn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition"> Exportar para JSON </button>
+                        </div>
+                        <div class="pt-6 border-t border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-100">Importar Dados</h3>
+                            <p class="text-sm text-gray-400 mt-1">Selecione um arquivo de backup JSON para adicionar os registros ao sistema. Os dados importados serão adicionados aos dados existentes.</p>
+                            <input type="file" id="import-file-input" class="hidden" accept=".json">
+                            <button id="import-trigger-btn" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition"> Selecionar Arquivo JSON </button>
+                            <span id="import-file-name" class="ml-4 text-sm text-gray-300"></span>
+                        </div>
+                        <div class="pt-6 border-t-2 border-red-500/30">
+                            <h3 class="text-lg font-semibold text-red-400">Limpar Dados</h3>
+                            <p class="text-sm text-gray-300 mt-1">
+                                <strong class="text-red-400">Atenção:</strong> Esta ação é irreversível e excluirá <strong class="text-red-400">TODOS</strong> os registros de captações do banco de dados. Tenha um backup antes de prosseguir.
+                            </p>
+                            <button id="clear-data-btn" class="mt-4 bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition"> Limpar Todos os Dados </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <div id="loading-spinner" class="text-center py-10"><p class="text-lg text-orange-400">Carregando dados...</p></div>
+    </div>
+    <div id="lead-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6 m-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-orange-400">Adicionar Novo Lead</h2>
+                <button id="close-lead-modal-btn" class="text-2xl font-bold leading-none text-gray-400 hover:text-white">&times;</button>
+            </div>
+            <form id="lead-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="lead-nome" class="block text-sm">Nome do Atleta</label>
+                        <input type="text" id="lead-nome" required class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="lead-ano-nascimento" class="block text-sm">Ano de Nascimento</label>
+                        <input type="number" id="lead-ano-nascimento" placeholder="Ex: 2007" required class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="lead-estado" class="block text-sm">Estado (UF)</label>
+                        <input type="text" id="lead-estado" placeholder="Ex: SP, RJ, MG" required class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="lead-telefone" class="block text-sm">Telefone</label>
+                        <input type="text" id="lead-telefone" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="lead-posicao" class="block text-sm">Posição</label>
+                        <select id="lead-posicao" required class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                            <option value="">Selecione a Posição</option>
+                            <option value="Goleiro">Goleiro</option>
+                            <option value="Zagueiro">Zagueiro</option>
+                            <option value="Lateral">Lateral</option>
+                            <option value="Volante">Volante</option>
+                            <option value="Meia">Meia</option>
+                            <option value="Atacante">Atacante</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Buscar Melhor Captador</button>
+                </div>
+            </form>
+            <div id="suggestion-results" class="hidden mt-6 pt-6 border-t border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Sugestões de Captadores para "<span id="suggestion-lead-name"></span>"</h3>
+                <div id="suggestion-list" class="space-y-3">
+                </div>
+                <p id="suggestion-empty" class="text-gray-500 text-center py-4">Nenhum captador encontrado com dados suficientes.</p>
+            </div>
+        </div>
+    </div>
+    <div id="edit-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6 m-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h2 class="text-xl font-semibold text-orange-400 mb-4">Editar Registro</h2>
+            <form id="edit-form" class="space-y-4">
+                <input type="hidden" id="edit-doc-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="edit-atleta-nome" class="block text-sm">Nome</label>
+                        <input type="text" id="edit-atleta-nome" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="edit-atleta-ano-nascimento" class="block text-sm">Ano de Nascimento</label>
+                        <input type="number" id="edit-atleta-ano-nascimento" placeholder="Ex: 2005" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="edit-atleta-estado" class="block text-sm">Estado</label>
+                        <input type="text" id="edit-atleta-estado" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="edit-atleta-telefone" class="block text-sm">Telefone</label>
+                        <input type="text" id="edit-atleta-telefone" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                </div>
+                <div>
+                    <label for="edit-status" class="block text-sm">Status</label>
+                    <select id="edit-status" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                        <option value="Aguardando">Aguardando</option>
+                        <option value="Reunião Agendada">Reunião Agendada</option>
+                        <option value="Sucesso">Sucesso</option>
+                        <option value="Falha">Falha</option>
+                        <option value="Standby">Standby</option>
+                    </select>
+                </div>
+                <div id="edit-campos-aguardando" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Data do Contato Inicial</label>
+                        <p id="view-data-contato" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Anotações do Captador</label>
+                        <p id="view-previsao-resposta" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md min-h-[4rem]"></p>
+                    </div>
+                </div>
+                <div id="edit-campos-reuniao" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Data da Reunião</label>
+                        <p id="view-data-reuniao" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Hora da Reunião</label>
+                        <p id="view-hora-reuniao" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md"></p>
+                    </div>
+                </div>
+                <div id="edit-campos-standby" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Motivo / Próximo Passo</label>
+                        <p id="view-motivo-standby" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md min-h-[4rem]"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400">Data do Lembrete</label>
+                        <p id="view-data-lembrete" class="mt-1 text-gray-200 bg-gray-900 p-2 rounded-md"></p>
+                    </div>
+                </div>
+                <div id="edit-campos-sucesso" class="hidden space-y-4">
+                    <div>
+                        <label for="edit-data-avaliacao" class="block text-sm">Data Avaliação</label>
+                        <input type="date" id="edit-data-avaliacao" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="edit-valor-pago" class="block text-sm">Valor Pago (R$)</label>
+                        <input type="number" id="edit-valor-pago" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="edit-nome-pagador" class="block text-sm">Nome do Pagador</label>
+                        <input type="text" id="edit-nome-pagador" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label for="edit-forma-pagamento" class="block text-sm">Forma de Pagamento</label>
+                        <select id="edit-forma-pagamento" class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                            <option value="">Selecione</option>
+                            <option value="Pix">Pix</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="edit-clube-destino" class="block text-sm">Clube de Destino</label>
+                        <input type="text" id="edit-clube-destino" placeholder="Ex: Flamengo, Palmeiras..." class="w-full mt-1 bg-gray-700 rounded-md p-2">
+                    </div>
+                </div>
+                <div id="edit-campos-falha" class="hidden">
+                    <label for="edit-motivo-falha" class="block text-sm">Motivo Falha</label>
+                    <textarea id="edit-motivo-falha" rows="2" class="w-full mt-1 bg-gray-700 rounded-md p-2"></textarea>
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancel-edit-btn" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md">Cancelar</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="athlete-detail-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6 m-4 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
+                <div>
+                    <h2 id="athlete-modal-name" class="text-2xl font-bold text-orange-400"></h2>
+                    <p id="athlete-modal-info" class="text-sm text-gray-300"></p>
+                </div>
+                <button id="close-athlete-modal-btn" class="text-2xl font-bold leading-none text-gray-400 hover:text-white">&times;</button>
+            </div>
+            <div id="athlete-modal-history" class="overflow-y-auto custom-scrollbar space-y-4 pr-2"></div>
+        </div>
+    </div>
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            query,
+            doc,
+            updateDoc,
+            deleteDoc,
+            onSnapshot,
+            addDoc,
+            serverTimestamp,
+            writeBatch,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyANHJr8an_CQDUQQph8PfFx62ZsZhDRSF4",
+            authDomain: "mindsoccer-app.firebaseapp.com",
+            projectId: "mindsoccer-app",
+            storageBucket: "mindsoccer-app.appspot.com",
+            messagingSenderId: "855191571293",
+            appId: "1:855191571293:web:d84fa499cc184ef73f76b4"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        // --- Seletores de elementos ---
+        const loginContainer = document.getElementById('login-container');
+        const appContainer = document.getElementById('app-container');
+        const mainContent = document.getElementById('main-content');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const userDisplay = document.getElementById('user-display');
+        const logoutBtn = document.getElementById('logout-btn');
+        const tabelaDados = document.getElementById('tabela-dados');
+        const tabelaGestorLeads = document.getElementById('tabela-gestor-leads');
+        const [filtroCaptador, filtroAnoNascimento, filtroDataInicio, filtroDataFim, rankingFiltro, buscaRegistros] = ['filtro-captador', 'filtro-ano-nascimento', 'filtro-data-inicio', 'filtro-data-fim', 'ranking-filtro', 'busca-registros'].map(id => document.getElementById(id));
+        const buscaRegistrosGestor = document.getElementById('busca-registros-gestor');
+        const filtroCaptadorGestor = document.getElementById('filtro-captador-gestor');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const paginacaoContainer = document.getElementById('paginacao-container');
+        const paginacaoGestorContainer = document.getElementById('paginacao-gestor-container');
+        const btnAnterior = document.getElementById('btn-anterior');
+        const btnProxima = document.getElementById('btn-proxima');
+        const btnGestorAnterior = document.getElementById('btn-gestor-anterior');
+        const btnGestorProxima = document.getElementById('btn-gestor-proxima');
+        const infoPagina = document.getElementById('info-pagina');
+        const infoGestorPagina = document.getElementById('info-gestor-pagina');
+        const avisoForm = document.getElementById('aviso-form');
+        const avisoMensagem = document.getElementById('aviso-mensagem');
+        const avisoSubmitBtn = document.getElementById('aviso-submit-btn');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        // Seletores de Abas e Views
+        const tabDashboard = document.getElementById('tab-dashboard');
+        const dashboardView = document.getElementById('dashboard-view');
+        const tabGestorLeads = document.getElementById('tab-gestor-leads');
+        const gestorLeadsView = document.getElementById('gestor-leads-view');
+        const tabAtletas = document.getElementById('tab-atletas');
+        const atletasView = document.getElementById('atletas-view');
+        const tabProjecao = document.getElementById('tab-projecao');
+        const projectionView = document.getElementById('projection-view');
+        const tabDesempenho = document.getElementById('tab-desempenho');
+        const desempenhoView = document.getElementById('desempenho-view');
+        // SELETORES PARA A ABA DE BACKUP
+        const tabBackup = document.getElementById('tab-backup');
+        const backupView = document.getElementById('backup-view');
+        const exportDataBtn = document.getElementById('export-data-btn');
+        const importTriggerBtn = document.getElementById('import-trigger-btn');
+        const importFileInput = document.getElementById('import-file-input');
+        const importFileName = document.getElementById('import-file-name');
+        const clearDataBtn = document.getElementById('clear-data-btn');
+        const listaAtletasContainer = document.getElementById('lista-atletas-container');
+        const atletasVazio = document.getElementById('atletas-vazio');
+        const athleteDetailModal = document.getElementById('athlete-detail-modal');
+        const closeAthleteModalBtn = document.getElementById('close-athlete-modal-btn');
+        const athleteModalName = document.getElementById('athlete-modal-name');
+        const athleteModalInfo = document.getElementById('athlete-modal-info');
+        const athleteModalHistory = document.getElementById('athlete-modal-history');
+        const addLeadBtn = document.getElementById('add-lead-btn');
+        const leadModal = document.getElementById('lead-modal');
+        const closeLeadModalBtn = document.getElementById('close-lead-modal-btn');
+        const leadForm = document.getElementById('lead-form');
+        const suggestionResults = document.getElementById('suggestion-results');
+        const suggestionLeadName = document.getElementById('suggestion-lead-name');
+        const suggestionList = document.getElementById('suggestion-list');
+        const suggestionEmpty = document.getElementById('suggestion-empty');
+        let todosOsDados = [];
+        let atletasAgrupados = new Map();
+        let dadosAtualmenteExibidos = [];
+        let currentPage = 1;
+        const ITENS_POR_PAGINA = 10;
+        let statusFiltro = 'todos';
+        let viewAtual = 'dashboard';
+        // Lógica de verificação de login ao carregar a página
+        function verificarEstadoDeLogin() {
+            const gestorName = localStorage.getItem('gestorName');
+            if (gestorName) {
+                userDisplay.textContent = `Gestor: ${gestorName}`;
+                loginContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                carregarDadosIniciais();
+            } else {
+                loginContainer.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+            }
+        }
+        // --- Funções de Inicialização e Lógica Principal ---
+        document.getElementById('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const name = document.getElementById('gestor-name').value;
+            if (!name.trim()) {
+                alert('Por favor, insira seu nome para entrar.');
+                return;
+            }
+            localStorage.setItem('gestorName', name);
+            window.location.reload(); // Recarrega para aplicar o login
+        });
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('gestorName');
+            window.location.reload();
+        });
+        verificarEstadoDeLogin();
+        async function carregarDadosIniciais() {
+            mainContent.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            const q = query(collection(db, "captacoes"));
+            onSnapshot(q, (querySnapshot) => {
+                todosOsDados = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                todosOsDados.sort((a, b) => (b.criadoEm?.seconds || 0) - (a.criadoEm?.seconds || 0));
+                agruparDadosPorAtleta();
+                popularFiltroCaptadores();
+                loadingSpinner.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                aplicarFiltros();
+            }, (error) => {
+                console.error("Erro ao buscar dados do Firestore: ", error);
+                alert("Não foi possível carregar os dados. Verifique o console para mais informações.");
+                loadingSpinner.classList.add('hidden');
+            });
+        }
+        function agruparDadosPorAtleta() {
+            atletasAgrupados.clear();
+            const dadosOrdenados = [...todosOsDados].sort((a, b) => (a.criadoEm?.seconds || 0) - (b.criadoEm?.seconds || 0));
+            dadosOrdenados.forEach(captacao => {
+                if (!captacao.nome || !captacao.anoNascimento) return;
+                const atletaKey = `${captacao.nome.toLowerCase().trim()}_${captacao.anoNascimento}`;
+                if (!atletasAgrupados.has(atletaKey)) {
+                    atletasAgrupados.set(atletaKey, {
+                        nome: captacao.nome,
+                        anoNascimento: captacao.anoNascimento,
+                        telefone: captacao.telefone,
+                        estado: captacao.estado,
+                        historico: []
+                    });
+                }
+                const atletaData = atletasAgrupados.get(atletaKey);
+                atletaData.historico.push(captacao);
+                atletaData.telefone = captacao.telefone;
+            });
+        }
+        function aplicarFiltros() {
+            let dadosFiltrados = [...todosOsDados];
+            if (viewAtual === 'gestor-leads') {
+                dadosFiltrados = dadosFiltrados.filter(d => d.origem === 'gestor');
+                if (filtroCaptadorGestor.value !== 'todos') {
+                    dadosFiltrados = dadosFiltrados.filter(d => d.captadorEmail === filtroCaptadorGestor.value);
+                }
+                if (buscaRegistrosGestor.value.toLowerCase().trim()) {
+                    dadosFiltrados = dadosFiltrados.filter(d => (d.nome || '').toLowerCase().includes(buscaRegistrosGestor.value.toLowerCase().trim()));
+                }
+            } else {
+                if (filtroCaptador.value !== 'todos') {
+                    dadosFiltrados = dadosFiltrados.filter(d => d.captadorEmail === filtroCaptador.value);
+                }
+                const termoBusca = buscaRegistros.value.toLowerCase().trim();
+                if (termoBusca) {
+                    dadosFiltrados = dadosFiltrados.filter(d => (d.nome || '').toLowerCase().includes(termoBusca) || (d.nomePagador || '').toLowerCase().includes(termoBusca));
+                }
+            }
+            if (filtroAnoNascimento.value) {
+                dadosFiltrados = dadosFiltrados.filter(d => d.anoNascimento === parseInt(filtroAnoNascimento.value));
+            }
+            if (filtroDataInicio.value) {
+                dadosFiltrados = dadosFiltrados.filter(d => d.data && new Date(d.data) >= new Date(filtroDataInicio.value));
+            }
+            if (filtroDataFim.value) {
+                dadosFiltrados = dadosFiltrados.filter(d => d.data && new Date(d.data) <= new Date(filtroDataFim.value));
+            }
+            let currentStatusFiltro;
+            if (viewAtual === 'gestor-leads') {
+                const activeBtn = document.querySelector('#gestor-leads-view .status-filter-btn.bg-orange-600');
+                currentStatusFiltro = activeBtn ? activeBtn.dataset.status : 'todos';
+            } else {
+                const activeBtn = document.querySelector('#dashboard-view .status-filter-btn.bg-orange-600');
+                currentStatusFiltro = activeBtn ? activeBtn.dataset.status : 'todos';
+            }
+            if (currentStatusFiltro !== 'todos') {
+                dadosFiltrados = dadosFiltrados.filter(d => d.status === currentStatusFiltro);
+            }
+            const atletasDuplicadosFiltrados = filtrarAtletas(dadosFiltrados);
+            currentPage = 1;
+            dadosAtualmenteExibidos = dadosFiltrados;
+            renderizarMetricasEficiencia(todosOsDados);
+            renderizarProjecao(todosOsDados);
+            renderizarAnaliseDesempenho(todosOsDados);
+            renderizarAgenda(todosOsDados);
+            renderizarReunioes(todosOsDados);
+            renderizarAguardando(todosOsDados);
+            renderizarRanking(todosOsDados);
+            renderizarListaAtletas(atletasDuplicadosFiltrados);
+            if (viewAtual === 'gestor-leads') {
+                const leadsGestor = todosOsDados.filter(d => d.origem === 'gestor');
+                renderizarMetricasGestorLeads(leadsGestor);
+                renderizarTabela(tabelaGestorLeads, paginacaoGestorContainer, infoGestorPagina, btnGestorAnterior, btnGestorProxima, dadosFiltrados);
+            } else {
+                renderizarTabela(tabelaDados, paginacaoContainer, infoPagina, btnAnterior, btnProxima, dadosFiltrados);
+            }
+        }
+        function renderizarMetricasGestorLeads(dados) {
+            const totalLeadsGestor = dados.length;
+            document.getElementById('metric-gestor-leads-total').textContent = totalLeadsGestor;
+            const leadsReuniao = dados.filter(d => d.status === 'Reunião Agendada');
+            const leadsSucesso = dados.filter(d => d.status === 'Sucesso');
+            const totalReunioes = leadsReuniao.length;
+            const totalSucessos = leadsSucesso.length;
+            const reunioesPorSucesso = totalSucessos > 0 ? (totalReunioes / totalSucessos).toFixed(1) : 'N/A';
+            const taxaSucesso = totalLeadsGestor > 0 ? ((totalSucessos / totalLeadsGestor) * 100).toFixed(1) + '%' : 'N/A';
+            document.getElementById('metric-reunioes-por-sucesso').textContent = reunioesPorSucesso;
+            document.getElementById('metric-taxa-sucesso-gestor').textContent = taxaSucesso;
+        }
+        function filtrarAtletas(dadosDeCaptacoesFiltradas) {
+            const idsDasCaptacoesFiltradas = new Set(dadosDeCaptacoesFiltradas.map(d => d.id));
+            const atletasFiltradosResult = [];
+            for (const atleta of atletasAgrupados.values()) {
+                const temHistoricoVisivel = atleta.historico.some(h => idsDasCaptacoesFiltradas.has(h.id));
+                if (temHistoricoVisivel && atleta.historico.length > 1) {
+                    atletasFiltradosResult.push(atleta);
+                }
+            }
+            return atletasFiltradosResult;
+        }
+        function formatarTelefone(numero) {
+            if (!numero || typeof numero !== 'string') return '---';
+            const numeroLimpo = numero.replace(/\D/g, '');
+            if (numeroLimpo.length === 11) {
+                return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(2, 7)}-${numeroLimpo.substring(7)}`;
+            }
+            if (numeroLimpo.length === 10) {
+                return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(2, 6)}-${numeroLimpo.substring(6)}`;
+            }
+            return numero;
+        }
+        function popularFiltroCaptadores() {
+            const captadoresMap = new Map();
+            todosOsDados.forEach(d => {
+                if (d.captadorEmail) {
+                    const nome = d.captadorNome || d.captadorEmail;
+                    if (!captadoresMap.has(d.captadorEmail)) {
+                        captadoresMap.set(d.captadorEmail, nome);
+                    }
+                }
+            });
+            const captadores = [...captadoresMap.entries()];
+            captadores.sort(([, nomeA], [, nomeB]) => nomeA.localeCompare(nomeB));
+            filtroCaptador.innerHTML = '<option value="todos">Todos</option>';
+            captadores.forEach(([email, nome]) => {
+                const option = new Option(nome, email);
+                filtroCaptador.add(option);
+            });
+            const captadoresGestorMap = new Map();
+            todosOsDados.filter(d => d.origem === 'gestor').forEach(d => {
+                if (d.captadorEmail) {
+                    const nome = d.captadorNome || d.captadorEmail;
+                    if (!captadoresGestorMap.has(d.captadorEmail)) {
+                        captadoresGestorMap.set(d.captadorEmail, nome);
+                    }
+                }
+            });
+            const captadoresGestor = [...captadoresGestorMap.entries()];
+            captadoresGestor.sort(([, nomeA], [, nomeB]) => nomeA.localeCompare(nomeB));
+            filtroCaptadorGestor.innerHTML = '<option value="todos">Todos os Captadores</option>';
+            captadoresGestor.forEach(([email, nome]) => {
+                const option = new Option(nome, email);
+                filtroCaptadorGestor.add(option);
+            });
+        }
+        function renderizarMetricasEficiencia(dados) {
+            const metricContatosPorSucesso = document.getElementById('metric-contatos-por-sucesso');
+            const totalContatos = dados.filter(d => d.status === 'Sucesso' || d.status === 'Falha').length;
+            const totalSucessos = dados.filter(d => d.status === 'Sucesso').length;
+            metricContatosPorSucesso.textContent = totalSucessos > 0 ? (totalContatos / totalSucessos).toFixed(1) : 'N/A';
+        }
+        function renderizarProjecao(dados) {
+            const projectionResult = document.getElementById('projection-result');
+            const projectionInfo = document.getElementById('projection-info');
+            const sucessos = dados.filter(d => d.status === 'Sucesso' && d.data);
+            if (sucessos.length === 0) {
+                projectionResult.textContent = '0';
+                projectionInfo.textContent = 'Não há dados históricos de sucesso para calcular uma projeção.';
+                return;
+            }
+            const sucessosPorMes = sucessos.reduce((acc, d) => {
+                const mesAno = d.data.substring(0, 7);
+                if (!acc[mesAno]) acc[mesAno] = 0;
+                acc[mesAno]++;
+                return acc;
+            }, {});
+            const numeroDeMeses = Object.keys(sucessosPorMes).length;
+            const totalSucessos = sucessos.length;
+            if (numeroDeMeses > 0) {
+                const mediaMensal = totalSucessos / numeroDeMeses;
+                projectionResult.textContent = Math.round(mediaMensal);
+                const captadorNome = filtroCaptador.options[filtroCaptador.selectedIndex].text;
+                projectionInfo.textContent = captadorNome === 'Todos' ? `Cálculo baseado na média de ${totalSucessos} captações em ${numeroDeMeses} meses.` : `Cálculo para ${captadorNome} baseado na média de ${totalSucessos} captações em ${numeroDeMeses} meses.`;
+            } else {
+                projectionResult.textContent = '0';
+                projectionInfo.textContent = 'Não há dados históricos de sucesso para calcular uma projeção.';
+            }
+        }
+        function renderizarAnaliseDesempenho(dados) {
+            const desempenhoContainer = document.getElementById('desempenho-container');
+            const categoriasDeFalha = {
+                'Questões Financeiras': ['dinheiro', 'condições financeiras', 'caro', 'custo', 'valor', 'pagar'],
+                'Lesão ou Problema Físico': ['machucado', 'lesão', 'lesões', 'contundido', 'físico', 'recuperando'],
+                'Atleta já Federado/Comprometido': ['federado', 'clube', 'contrato', 'empresário', 'outro time'],
+                'Falta de Interesse / Desistência': ['interesse', 'desistiu', 'não quer', 'não quis mais', 'sumiu', 'não responde'],
+                'Logística ou Distância': ['longe', 'distância', 'viagem', 'mudar', 'transporte'],
+            };
+            function getCategoriaDaFalha(motivo) {
+                if (!motivo) return 'Não especificado';
+                const motivoLowerCase = motivo.toLowerCase();
+                for (const categoria in categoriasDeFalha) {
+                    if (categoriasDeFalha[categoria].some(keyword => motivoLowerCase.includes(keyword))) return categoria;
+                }
+                return 'Outros';
+            }
+            desempenhoContainer.innerHTML = '';
+            const falhasPorCaptador = dados.reduce((acc, d) => {
+                if (d.status === 'Falha') {
+                    const email = d.captadorEmail;
+                    if (!acc[email]) {
+                        acc[email] = {
+                            nome: d.captadorNome || email,
+                            motivos: []
+                        };
+                    }
+                    acc[email].motivos.push(d.motivo || 'Não especificado');
+                }
+                return acc;
+            }, {});
+            const analise = Object.values(falhasPorCaptador).map(captador => {
+                const contagemCategorias = captador.motivos.reduce((cont, motivo) => {
+                    const categoria = getCategoriaDaFalha(motivo);
+                    cont[categoria] = (cont[categoria] || 0) + 1;
+                    return cont;
+                }, {});
+                let categoriaPrincipal = 'N/A';
+                let maxContagem = 0;
+                for (const categoria in contagemCategorias) {
+                    if (contagemCategorias[categoria] > maxContagem) {
+                        maxContagem = contagemCategorias[categoria];
+                        categoriaPrincipal = categoria;
+                    }
+                }
+                return {
+                    nome: captador.nome,
+                    motivo: categoriaPrincipal,
+                    contagem: maxContagem,
+                    totalFalhas: captador.motivos.length
+                };
+            });
+            if (analise.length === 0) {
+                desempenhoContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full">Nenhum dado de falha para analisar.</p>';
+                return;
+            }
+            analise.sort((a, b) => a.nome.localeCompare(b.nome)).forEach(item => {
+                if (item.totalFalhas === 0) return;
+                const card = document.createElement('div');
+                card.className = 'bg-gray-900 p-4 rounded-lg shadow-lg';
+                card.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-100">${item.nome}</h3>
+                        <p class="text-sm text-gray-400 mt-2">Principal categoria de falha:</p>
+                        <p class="text-base font-semibold text-orange-400 mt-1">"${item.motivo}"</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-700 text-right">
+                        <p class="text-xs text-gray-400">Representa <span class="font-bold text-white">${item.contagem}</span> de <span class="font-bold text-white">${item.totalFalhas}</span> falhas.</p>
+                    </div>
+                `;
+                desempenhoContainer.appendChild(card);
+            });
+        }
+        function renderizarAgenda(dados) {
+            const container = document.getElementById('agenda-container');
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const proximasAvaliacoes = dados.filter(d => d.status === 'Sucesso' && d.dataAvaliacao && new Date(d.dataAvaliacao + 'T00:00:00') >= hoje).sort((a, b) => new Date(a.dataAvaliacao) - new Date(b.dataAvaliacao));
+            document.querySelector('#agenda-container').previousElementSibling.innerHTML = `Próximas Avaliações <span id="count-agenda" class="text-base font-normal">(${proximasAvaliacoes.length}) Avaliações</span>`;
+            container.innerHTML = '';
+            if (proximasAvaliacoes.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Nenhuma avaliação agendada.</p>';
+                return;
+            }
+            proximasAvaliacoes.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'bg-gray-700 p-3 rounded-md';
+                item.innerHTML = `<p class="font-semibold text-white">${d.nome}</p><p class="text-sm text-gray-300">Data: ${new Date(d.dataAvaliacao + 'T00:00:00').toLocaleDateString('pt-BR')}</p><p class="text-xs text-gray-400">Captador: ${d.captadorNome || d.captadorEmail}</p>`;
+                container.appendChild(item);
+            });
+        }
+        function renderizarReunioes(dados) {
+            const container = document.getElementById('reunioes-container');
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const proximasReunioes = dados.filter(d => d.status === 'Reunião Agendada' && d.dataReuniao && new Date(d.dataReuniao + 'T00:00:00') >= hoje).sort((a, b) => new Date(a.dataReuniao) - new Date(b.dataReuniao));
+            document.querySelector('#reunioes-container').previousElementSibling.innerHTML = `Reuniões Agendadas <span id="count-reunioes" class="text-base font-normal">(${proximasReunioes.length}) Reuniões</span>`;
+            container.innerHTML = '';
+            if (proximasReunioes.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Nenhuma reunião agendada.</p>';
+                return;
+            }
+            proximasReunioes.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'bg-gray-700 p-3 rounded-md';
+                const dataReuniaoFmt = new Date(d.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR');
+                item.innerHTML = `<p class="font-semibold text-white">${d.nome}</p><p class="text-sm text-cyan-300">Data: ${dataReuniaoFmt} às ${d.horaReuniao || 'N/A'}</p><p class="text-xs text-gray-400">Captador: ${d.captadorNome || d.captadorEmail}</p>`;
+                container.appendChild(item);
+            });
+        }
+        function renderizarAguardando(dados) {
+            const container = document.getElementById('aguardando-container');
+            const aguardando = dados.filter(d => d.status === 'Aguardando').sort((a, b) => (b.criadoEm?.seconds || 0) - (a.criadoEm?.seconds || 0));
+            document.querySelector('#aguardando-container').previousElementSibling.innerHTML = `Captações Aguardando <span id="count-aguardando" class="text-base font-normal">(${aguardando.length})</span>`;
+            container.innerHTML = '';
+            if (aguardando.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Nenhuma captação aguardando.</p>';
+                return;
+            }
+            aguardando.slice(0, 15).forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'bg-gray-700 p-3 rounded-md';
+                const dataRegistro = d.criadoEm ? `Registrado em: ${new Date(d.criadoEm.seconds * 1000).toLocaleDateString('pt-BR')}` : '';
+                item.innerHTML = `<p class="font-semibold text-white">${d.nome || 'N/A'}</p><p class="text-xs text-gray-400">Captador: ${d.captadorNome || d.captadorEmail}</p><p class="text-xs text-gray-400">${dataRegistro}</p>`;
+                container.appendChild(item);
+            });
+        }
+        function renderizarRanking(dados) {
+            const container = document.getElementById('ranking-container');
+            const criterio = rankingFiltro.value;
+            const statsPorCaptador = dados.reduce((acc, d) => {
+                const email = d.captadorEmail;
+                if (!acc[email]) {
+                    acc[email] = {
+                        nome: d.captadorNome || email,
+                        totalContatos: 0,
+                        totalDecididos: 0,
+                        sucesso: 0,
+                        receita: 0,
+                        origemGestor: false
+                    };
+                }
+                acc[email].totalContatos++;
+                if (d.status === 'Sucesso' || d.status === 'Falha') acc[email].totalDecididos++;
+                if (d.status === 'Sucesso') {
+                    acc[email].sucesso++;
+                    acc[email].receita += (d.valorPago || 0);
+                }
+                if (d.origem === 'gestor') {
+                    acc[email].origemGestor = true;
+                }
+                return acc;
+            }, {});
+            const ranking = Object.values(statsPorCaptador).map(stats => ({
+                ...stats,
+                taxaSucesso: stats.totalDecididos > 0 ? (stats.sucesso / stats.totalDecididos) * 100 : 0,
+                totalCaptacoes: stats.sucesso,
+                receitaGerada: stats.receita
+            }));
+            if (criterio === 'taxaSucesso') ranking.sort((a, b) => b.taxaSucesso - a.taxaSucesso);
+            else if (criterio === 'totalCaptacoes') ranking.sort((a, b) => b.totalCaptacoes - a.totalCaptacoes);
+            else if (criterio === 'receitaGerada') ranking.sort((a, b) => b.receitaGerada - a.receitaGerada);
+            container.innerHTML = `<table class="w-full text-sm text-left"><thead><tr class="border-b border-gray-700"><th class="px-2 py-2 font-medium">Captador</th><th class="px-2 py-2 font-medium text-center">Contatos</th><th class="px-2 py-2 font-medium text-center">Taxa</th><th class="px-2 py-2 font-medium text-center">Sucessos</th><th class="px-2 py-2 font-medium text-right">Receita</th></tr></thead><tbody></tbody></table>`;
+            const tbody = container.querySelector('tbody');
+            if (ranking.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Nenhum dado no período.</td></tr>';
+                return;
+            }
+            ranking.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-800 hover:bg-gray-700/50';
+                const origemIcon = r.origemGestor ? '<span class="text-blue-400 font-bold" title="Lead atribuído pelo Gestor"> (G)</span>' : '';
+                tr.innerHTML = `<td class="px-2 py-2 font-medium">${r.nome}${origemIcon}</td><td class="px-2 py-2 text-center">${r.totalContatos}</td><td class="px-2 py-2 text-center">${r.taxaSucesso.toFixed(1)}%</td><td class="px-2 py-2 text-center">${r.totalCaptacoes}</td><td class="px-2 py-2 text-right">${(r.receitaGerada).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+        function renderizarListaAtletas(atletasParaRenderizar) {
+            listaAtletasContainer.innerHTML = '';
+            atletasVazio.style.display = atletasParaRenderizar.length === 0 ? 'block' : 'none';
+            if (atletasParaRenderizar.length === 0) return;
+            atletasParaRenderizar.sort((a, b) => a.nome.localeCompare(b.nome)).forEach(atleta => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-900 p-4 rounded-lg shadow-lg hover:bg-gray-700/50 cursor-pointer transition';
+                const idade = new Date().getFullYear() - atleta.anoNascimento;
+                card.innerHTML = `<h3 class="font-bold text-lg text-gray-100 truncate">${atleta.nome}</h3><p class="text-sm text-gray-400">${idade} anos - ${atleta.estado || 'N/A'}</p><div class="mt-3 pt-3 border-t border-gray-700 text-xs"><p>Telefone: <span class="font-semibold">${formatarTelefone(atleta.telefone)}</span></p><p class="font-bold text-orange-400">Total de contatos: ${atleta.historico.length}</p></div>`;
+                card.addEventListener('click', () => abrirModalDetalheAtleta(atleta));
+                listaAtletasContainer.appendChild(card);
+            });
+        }
+        function renderizarTabela(container, paginacaoContainerEl, infoPaginaEl, btnAnteriorEl, btnProximaEl, dados) {
+            const dadosPagina = dados.slice((currentPage - 1) * ITENS_POR_PAGINA, currentPage * ITENS_POR_PAGINA);
+            const totalPaginas = Math.ceil(dados.length / ITENS_POR_PAGINA) || 1;
+            const tabelaVaziaEl = container.id === 'tabela-gestor-leads' ? document.getElementById('tabela-gestor-vazia') : document.getElementById('tabela-vazia');
+            tabelaVaziaEl.style.display = dados.length === 0 ? 'block' : 'none';
+            paginacaoContainerEl.style.display = dados.length > 0 ? 'flex' : 'none';
+            const countEl = container.id === 'tabela-gestor-leads' ? document.getElementById('count-gestor-registros') : document.getElementById('count-registros');
+            if (countEl) {
+                countEl.textContent = `(${dados.length})`;
+            }
+            if (dados.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            infoPaginaEl.textContent = `Página ${currentPage} de ${totalPaginas}`;
+            btnAnteriorEl.disabled = currentPage === 1;
+            btnProximaEl.disabled = currentPage >= totalPaginas;
+            const contagemNomes = new Map();
+            todosOsDados.forEach(d => {
+                if (!d.nome || !d.anoNascimento) return;
+                const key = `${d.nome.toLowerCase().trim()}_${d.anoNascimento}`;
+                contagemNomes.set(key, (contagemNomes.get(key) || 0) + 1);
+            });
+            const linhasHtml = dadosPagina
+                .map(d => {
+                    const idade = d.anoNascimento ? new Date().getFullYear() - d.anoNascimento : 'N/A';
+                    const key = d.nome && d.anoNascimento ? `${d.nome.toLowerCase().trim()}_${d.anoNascimento}` : null;
+                    const isDuplicado = key && contagemNomes.get(key) > 1;
+                    const nomeHtml = `${d.nome || 'N/A'} ${isDuplicado ? '<span title="Este atleta possui múltiplos registros no sistema.">⚠️</span>' : ''}`;
+                    let statusHtml, statusClass;
+                    if (d.status === 'Sucesso') {
+                        statusClass = d.confirmado ? 'text-teal-400' : 'text-green-400';
+                        statusHtml = d.confirmado ? 'Sucesso (✓)' : 'Sucesso';
+                    } else if (d.status === 'Falha') {
+                        statusClass = 'text-red-400';
+                        statusHtml = 'Falha';
+                    } else if (d.status === 'Reunião Agendada') {
+                        statusClass = 'text-cyan-400';
+                        statusHtml = 'Reunião';
+                    } else if (d.status === 'Standby') {
+                        statusClass = 'text-indigo-400';
+                        statusHtml = 'Standby';
+                    } else {
+                        statusClass = 'text-yellow-400';
+                        statusHtml = 'Aguardando';
+                    }
+                    let detalhesHtml = '---';
+                    switch(d.status) {
+                        case 'Sucesso':
+                            detalhesHtml = `Avaliação: ${d.dataAvaliacao ? new Date(d.dataAvaliacao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'}`;
+                            break;
+                        case 'Reunião Agendada':
+                            const dataReuniaoFmt = d.dataReuniao ? new Date(d.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
+                            detalhesHtml = `Data: ${dataReuniaoFmt} às ${d.horaReuniao || 'N/A'}`;
+                            break;
+                        case 'Standby':
+                            detalhesHtml = `Lembrete: ${d.dataLembrete ? new Date(d.dataLembrete + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'}`;
+                            break;
+                        case 'Falha':
+                            detalhesHtml = d.motivo ? `<span title="${d.motivo}">${d.motivo.substring(0, 25)}${d.motivo.length > 25 ? '...' : ''}</span>` : 'N/A';
+                            break;
+                    }
+                    const buttons = [];
+                    const baseButtonClass = "text-xs px-3 py-1 rounded text-center";
+                    if (d.status === 'Sucesso' && d.confirmado !== true) {
+                        buttons.push(`<button data-id="${d.id}" class="confirm-btn bg-teal-600 hover:bg-teal-500 ${baseButtonClass} whitespace-nowrap">Confirmar ✓</button>`);
+                    }
+                    buttons.push(`<button data-id="${d.id}" class="edit-btn bg-blue-600 hover:bg-blue-500 ${baseButtonClass}">Editar</button>`);
+                    if (d.status === 'Falha' && !d.rediscado) {
+                        buttons.push(`<button data-id="${d.id}" class="redial-btn bg-green-700 hover:bg-green-600 ${baseButtonClass}">Rediscar</button>`);
+                    }
+                    buttons.push(`<button data-id="${d.id}" class="delete-btn bg-red-800 hover:bg-red-700 ${baseButtonClass}">Excluir</button>`);
+                    let formattedTimestamp = d.criadoEm?.seconds ? new Date(d.criadoEm.seconds * 1000).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
+                    const origemGestor = d.origem === 'gestor' ? '<span class="text-xs text-blue-400 font-semibold" title="Lead atribuído pelo Gestor">(G)</span>' : '';
+                    const captadorDisplay = `${d.captadorNome || d.captadorEmail} ${origemGestor}`;
+                    return ` <tr class="hover:bg-gray-700/50"> <td class="px-6 py-4 whitespace-nowrap"> <div>${nomeHtml}, ${idade}</div> <div class="text-xs text-gray-400 mt-1">Registrado em: ${formattedTimestamp}</div> </td> <td class="px-6 py-4 whitespace-nowrap">${d.estado || '---'}</td> <td class="px-6 py-4 whitespace-nowrap">${d.posicao || '---'}</td> <td class="px-6 py-4 whitespace-nowrap">${formatarTelefone(d.telefone)}</td> <td class="px-6 py-4 whitespace-nowrap text-sm">${captadorDisplay}</td> <td class="px-6 py-4"><span class="font-semibold ${statusClass}">${statusHtml}</span></td> <td class="px-6 py-4 text-sm">${detalhesHtml}</td> <td class="px-6 py-4"> <div class="flex items-center space-x-1"> ${buttons.join('')} </div> </td> </tr> `;
+                }).join('');
+            container.innerHTML = linhasHtml;
+        }
+        function ativarAba(abaAtiva, viewAtiva, viewName) {
+            viewAtual = viewName;
+            const abas = [tabDashboard, tabGestorLeads, tabAtletas, tabProjecao, tabDesempenho, tabBackup];
+            const views = [dashboardView, gestorLeadsView, atletasView, projectionView, desempenhoView, backupView];
+            abas.forEach(aba => {
+                aba.classList.toggle('text-orange-400', aba === abaAtiva);
+                aba.classList.toggle('border-orange-400', aba === abaAtiva);
+                aba.classList.toggle('font-semibold', aba === abaAtiva);
+                aba.classList.toggle('text-gray-400', aba !== abaAtiva);
+                aba.classList.toggle('border-b-2', aba === abaAtiva);
+            });
+            views.forEach(view => view.classList.toggle('hidden', view !== viewAtiva));
+            if (viewName === 'gestor-leads') {
+                buscaRegistros.value = '';
+                document.querySelectorAll('#dashboard-view .status-filter-btn').forEach(b => b.classList.remove('bg-orange-600'));
+                document.getElementById('status-gestor-todos').classList.add('bg-orange-600');
+            } else {
+                buscaRegistrosGestor.value = '';
+                document.querySelectorAll('#gestor-leads-view .status-filter-btn').forEach(b => b.classList.remove('bg-orange-600'));
+                document.getElementById('status-todos').classList.add('bg-orange-600');
+            }
+            aplicarFiltros();
+        }
+        function abrirModalDetalheAtleta(atleta) {
+            const idade = new Date().getFullYear() - atleta.anoNascimento;
+            athleteModalName.textContent = atleta.nome;
+            athleteModalInfo.textContent = `${idade} anos | ${atleta.estado || 'N/A'} | Tel: ${formatarTelefone(atleta.telefone)}`;
+            athleteModalHistory.innerHTML = '';
+            atleta.historico.sort((a, b) => (b.criadoEm?.seconds || 0) - (a.criadoEm?.seconds || 0)).forEach(captacao => {
+                let statusHtml, statusClass;
+                if (captacao.status === 'Sucesso') {
+                    statusClass = captacao.confirmado ? 'bg-teal-500' : 'bg-green-500';
+                    statusHtml = captacao.confirmado ? 'Sucesso ✓' : 'Sucesso';
+                } else if (captacao.status === 'Falha') {
+                    statusClass = 'bg-red-500';
+                    statusHtml = 'Falha';
+                } else if (captacao.status === 'Reunião Agendada') {
+                    statusClass = 'bg-cyan-500';
+                    statusHtml = 'Reunião';
+                } else if (captacao.status === 'Standby') {
+                    statusClass = 'bg-indigo-500';
+                    statusHtml = 'Standby';
+                } else {
+                    statusClass = 'bg-yellow-500';
+                    statusHtml = 'Aguardando';
+                }
+                const dataRegistro = captacao.criadoEm ? new Date(captacao.criadoEm.seconds * 1000).toLocaleDateString('pt-BR') : 'N/A';
+                let detalhes = '';
+                if(captacao.status === 'Sucesso') {
+                    detalhes += `<p class="text-xs mt-1">Data Avaliação: <span class="font-medium">${captacao.dataAvaliacao ? new Date(captacao.dataAvaliacao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'}</span></p>`;
+                    if (captacao.clubeDestino) {
+                        detalhes += `<p class="text-xs mt-1">Clube de Destino: <span class="font-medium text-orange-300">${captacao.clubeDestino}</span></p>`;
+                    }
+                } else if(captacao.status === 'Falha') {
+                    detalhes += `<p class="text-xs mt-1">Motivo: <span class="font-medium">${captacao.motivo || 'Não especificado'}</span></p>`;
+                } else if(captacao.status === 'Reunião Agendada') {
+                    const dataReuniaoFmt = captacao.dataReuniao ? new Date(captacao.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
+                    detalhes += `<p class="text-xs mt-1">Reunião: <span class="font-medium">${dataReuniaoFmt} às ${captacao.horaReuniao || 'N/A'}</span></p>`;
+                } else if(captacao.status === 'Standby') {
+                    detalhes += `<p class="text-xs mt-1">Lembrete: <span class="font-medium">${captacao.dataLembrete ? new Date(captacao.dataLembrete + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'}</span></p>`;
+                }
+                const historyItem = document.createElement('div');
+                historyItem.className = 'bg-gray-900 p-3 rounded-md';
+                historyItem.innerHTML = `<div class="flex justify-between items-center"><span class="text-sm font-semibold">Registrado em ${dataRegistro}</span><span class="text-xs font-bold px-2 py-1 rounded-full ${statusClass}">${statusHtml}</span></div><p class="text-xs text-gray-400 mt-2">Captador: ${captacao.captadorNome || captacao.captadorEmail}</p>${detalhes}`;
+                athleteModalHistory.appendChild(historyItem);
+            });
+            athleteDetailModal.style.display = 'flex';
+        }
+        function abrirModalDeEdicao(registro) {
+            editForm.elements['edit-doc-id'].value = registro.id;
+            editForm.elements['edit-atleta-nome'].value = registro.nome || '';
+            editForm.elements['edit-atleta-ano-nascimento'].value = registro.anoNascimento || '';
+            editForm.elements['edit-atleta-estado'].value = registro.estado || '';
+            editForm.elements['edit-atleta-telefone'].value = registro.telefone || '';
+            editForm.elements['edit-status'].value = registro.status;
+            document.getElementById('view-data-contato').textContent = registro.data ? new Date(registro.data + 'T00:00:00').toLocaleDateString('pt-BR') : 'Não informada';
+            document.getElementById('view-previsao-resposta').textContent = registro.previsaoResposta || 'Nenhuma anotação.';
+            const dataReuniaoFmt = registro.dataReuniao ? new Date(registro.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR') : 'Não informada';
+            document.getElementById('view-data-reuniao').textContent = dataReuniaoFmt;
+            document.getElementById('view-hora-reuniao').textContent = registro.horaReuniao || 'Não informada';
+            document.getElementById('view-motivo-standby').textContent = registro.motivoStandby || 'Nenhuma anotação.';
+            const dataLembreteFmt = registro.dataLembrete ? new Date(registro.dataLembrete + 'T00:00:00').toLocaleDateString('pt-BR') : 'Não informada';
+            document.getElementById('view-data-lembrete').textContent = dataLembreteFmt;
+            editForm.elements['edit-data-avaliacao'].value = registro.dataAvaliacao || '';
+            editForm.elements['edit-valor-pago'].value = registro.valorPago || '';
+            editForm.elements['edit-nome-pagador'].value = registro.nomePagador || '';
+            editForm.elements['edit-forma-pagamento'].value = registro.formaPagamento || '';
+            editForm.elements['edit-clube-destino'].value = registro.clubeDestino || '';
+            editForm.elements['edit-motivo-falha'].value = registro.motivo || '';
+            toggleEditCampos();
+            editModal.style.display = 'flex';
+        }
+        function fecharModalDeEdicao() {
+            editModal.style.display = 'none';
+        }
+        function toggleEditCampos() {
+            const status = document.getElementById('edit-status').value;
+            document.getElementById('edit-campos-aguardando').style.display = status === 'Aguardando' ? 'block' : 'none';
+            document.getElementById('edit-campos-reuniao').style.display = status === 'Reunião Agendada' ? 'block' : 'none';
+            document.getElementById('edit-campos-standby').style.display = status === 'Standby' ? 'block' : 'none';
+            document.getElementById('edit-campos-sucesso').style.display = status === 'Sucesso' ? 'block' : 'none';
+            document.getElementById('edit-campos-falha').style.display = status === 'Falha' ? 'block' : 'none';
+        }
+
+        // FUNÇÃO ATUALIZADA PARA BUSCAR OS CAPTADORES DINAMICAMENTE
+        function sugerirCaptador(lead, todosOsDados) {
+            const {
+                anoNascimento,
+                estado
+            } = lead;
+            const idadeLead = new Date().getFullYear() - anoNascimento;
+
+            // 1. Mapeia todos os captadores únicos a partir dos dados existentes
+            const captadoresExistentesMap = todosOsDados.reduce((acc, d) => {
+                if (d.captadorEmail) {
+                    const id = d.captadorEmail;
+                    if (!acc[id]) {
+                        acc[id] = {
+                            id: d.captadorId,
+                            nome: d.captadorNome || id,
+                            captacoes: []
+                        };
+                    }
+                    acc[id].captacoes.push(d);
+                }
+                return acc;
+            }, {});
+            
+            const captadoresComPontuacao = Object.values(captadoresExistentesMap).map(captadorData => {
+                const { captacoes } = captadorData;
+                
+                // Cálculo de pontuação (mantido do código anterior)
+                const decididas = captacoes.filter(c => c.status === 'Sucesso' || c.status === 'Falha');
+                const sucessoTotal = captacoes.filter(c => c.status === 'Sucesso').length;
+                const taxaSucessoGeral = decididas.length > 0 ? (sucessoTotal / decididas.length) : 0;
+                
+                const decididasNoEstado = decididas.filter(c => c.estado && c.estado.toUpperCase() === estado.toUpperCase());
+                const sucessoNoEstado = decididasNoEstado.filter(c => c.status === 'Sucesso').length;
+                const taxaSucessoEstado = decididasNoEstado.length > 0 ? (sucessoNoEstado / decididasNoEstado.length) : 0;
+                
+                const decididasNaIdade = decididas.filter(c => {
+                    const idadeCaptacao = c.anoNascimento ? new Date().getFullYear() - c.anoNascimento : -1;
+                    return Math.abs(idadeCaptacao - idadeLead) <= 1;
+                });
+                const sucessoNaIdade = decididasNaIdade.filter(c => c.status === 'Sucesso').length;
+                const taxaSucessoIdade = decididasNaIdade.length > 0 ? (sucessoNaIdade / decididasNaIdade.length) : 0;
+                
+                const cargaTrabalho = captacoes.filter(c => c.status === 'Aguardando').length;
+                
+                const pontuacao = (taxaSucessoEstado * 3) + (taxaSucessoIdade * 2) + (taxaSucessoGeral * 1) - (cargaTrabalho * 1);
+                
+                return {
+                    ...captadorData,
+                    pontuacao,
+                    displayMetrics: {
+                        taxaSucessoEstado: (taxaSucessoEstado * 100).toFixed(0),
+                        taxaSucessoIdade: (taxaSucessoIdade * 100).toFixed(0),
+                        cargaTrabalho
+                    }
+                };
+            });
+            // Retorna a lista completa, ordenada pela pontuação
+            return captadoresComPontuacao.sort((a, b) => b.pontuacao - a.pontuacao);
+        }
+        async function atribuirLead(lead, captador, event) {
+            try {
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = 'Atribuindo...';
+                await addDoc(collection(db, "captacoes"), {
+                    ...lead,
+                    captadorId: captador.id,
+                    captadorNome: captador.nome,
+                    captadorEmail: captador.id,
+                    status: 'Aguardando',
+                    origem: 'gestor',
+                    criadoEm: serverTimestamp()
+                });
+                alert(`Lead "${lead.nome}" atribuído com sucesso para ${captador.nome}!`);
+                leadModal.style.display = 'none';
+                leadForm.reset();
+                suggestionResults.classList.add('hidden');
+            } catch (error) {
+                console.error("Erro ao atribuir lead: ", error);
+                alert("Ocorreu um erro ao salvar o lead. Tente novamente.");
+            }
+        }
+        // --- Listeners de Eventos ---
+        tabDashboard.addEventListener('click', () => {
+            ativarAba(tabDashboard, dashboardView, 'dashboard');
+        });
+        tabGestorLeads.addEventListener('click', () => {
+            ativarAba(tabGestorLeads, gestorLeadsView, 'gestor-leads');
+        });
+        tabAtletas.addEventListener('click', () => ativarAba(tabAtletas, atletasView, 'atletas'));
+        tabProjecao.addEventListener('click', () => ativarAba(tabProjecao, projectionView, 'projecao'));
+        tabDesempenho.addEventListener('click', () => ativarAba(tabDesempenho, desempenhoView, 'desempenho'));
+        tabBackup.addEventListener('click', () => ativarAba(tabBackup, backupView, 'backup'));
+        closeAthleteModalBtn.addEventListener('click', () => athleteDetailModal.style.display = 'none');
+        cancelEditBtn.addEventListener('click', fecharModalDeEdicao);
+        document.getElementById('edit-status').addEventListener('change', toggleEditCampos);
+        [filtroCaptador, filtroAnoNascimento, filtroDataInicio, filtroDataFim, rankingFiltro].forEach(el => {
+            el.addEventListener('change', aplicarFiltros);
+        });
+        filtroCaptadorGestor.addEventListener('change', aplicarFiltros);
+        document.querySelectorAll('#dashboard-view .status-filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                statusFiltro = e.target.dataset.status;
+                document.querySelectorAll('#dashboard-view .status-filter-btn').forEach(b => b.classList.remove('bg-orange-600'));
+                e.target.classList.add('bg-orange-600');
+                aplicarFiltros();
+            });
+        });
+        document.querySelectorAll('#gestor-leads-view .status-filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                statusFiltro = e.target.dataset.status;
+                document.querySelectorAll('#gestor-leads-view .status-filter-btn').forEach(b => b.classList.remove('bg-orange-600'));
+                e.target.classList.add('bg-orange-600');
+                aplicarFiltros();
+            });
+        });
+        buscaRegistros.addEventListener('input', aplicarFiltros);
+        buscaRegistrosGestor.addEventListener('input', aplicarFiltros);
+        btnAnterior.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderizarTabela(tabelaDados, paginacaoContainer, infoPagina, btnAnterior, btnProxima, dadosAtualmenteExibidos);
+            }
+        });
+        btnProxima.addEventListener('click', () => {
+            const totalPaginas = Math.ceil(dadosAtualmenteExibidos.length / ITENS_POR_PAGINA);
+            if (currentPage < totalPaginas) {
+                currentPage++;
+                renderizarTabela(tabelaDados, paginacaoContainer, infoPagina, btnAnterior, btnProxima, dadosAtualmenteExibidos);
+            }
+        });
+        btnGestorAnterior.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderizarTabela(tabelaGestorLeads, paginacaoGestorContainer, infoGestorPagina, btnGestorAnterior, btnGestorProxima, dadosAtualmenteExibidos);
+            }
+        });
+        btnGestorProxima.addEventListener('click', () => {
+            const totalPaginas = Math.ceil(dadosAtualmenteExibidos.length / ITENS_POR_PAGINA);
+            if (currentPage < totalPaginas) {
+                currentPage++;
+                renderizarTabela(tabelaGestorLeads, paginacaoGestorContainer, infoGestorPagina, btnGestorAnterior, btnGestorProxima, dadosAtualmenteExibidos);
+            }
+        });
+        tabelaDados.addEventListener('click', e => {
+            const target = e.target.closest('button');
+            if (!target) return;
+            const id = target.dataset.id;
+            if (target.classList.contains('edit-btn')) {
+                abrirModalDeEdicao(todosOsDados.find(d => d.id === id));
+            }
+            if (target.classList.contains('delete-btn')) {
+                if (confirm('Tem certeza que deseja excluir este registro?')) {
+                    deleteDoc(doc(db, "captacoes", id));
+                }
+            }
+            if (target.classList.contains('confirm-btn')) {
+                if (confirm('Confirmar esta captação como sucesso definitivo?')) {
+                    confirmarCaptacao(id);
+                }
+            }
+            if (target.classList.contains('redial-btn')) {
+                if (confirm('Deseja reiniciar este contato?')) {
+                    updateDoc(doc(db, "captacoes", id), {
+                        status: 'Aguardando',
+                        motivo: null,
+                        rediscado: true
+                    });
+                }
+            }
+        });
+        tabelaGestorLeads.addEventListener('click', e => {
+            const target = e.target.closest('button');
+            if (!target) return;
+            const id = target.dataset.id;
+            if (target.classList.contains('edit-btn')) {
+                abrirModalDeEdicao(todosOsDados.find(d => d.id === id));
+            }
+            if (target.classList.contains('delete-btn')) {
+                if (confirm('Tem certeza que deseja excluir este registro?')) {
+                    deleteDoc(doc(db, "captacoes", id));
+                }
+            }
+            if (target.classList.contains('confirm-btn')) {
+                if (confirm('Confirmar esta captação como sucesso definitivo?')) {
+                    confirmarCaptacao(id);
+                }
+            }
+            if (target.classList.contains('redial-btn')) {
+                if (confirm('Deseja reiniciar este contato?')) {
+                    updateDoc(doc(db, "captacoes", id), {
+                        status: 'Aguardando',
+                        motivo: null,
+                        rediscado: true
+                    });
+                }
+            }
+        });
+        editForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const id = editForm.elements['edit-doc-id'].value;
+            const status = editForm.elements['edit-status'].value;
+            const registroOriginal = todosOsDados.find(d => d.id === id);
+            const dadosAtualizados = {
+                nome: editForm.elements['edit-atleta-nome'].value,
+                anoNascimento: editForm.elements['edit-atleta-ano-nascimento'].value ? parseInt(editForm.elements['edit-atleta-ano-nascimento'].value) : null,
+                estado: editForm.elements['edit-atleta-estado'].value,
+                telefone: editForm.elements['edit-atleta-telefone'].value,
+                status: status,
+                previsaoResposta: status === 'Aguardando' ? registroOriginal.previsaoResposta : null,
+                dataReuniao: status === 'Reunião Agendada' ? registroOriginal.dataReuniao : null,
+                horaReuniao: status === 'Reuniao Agendada' ? registroOriginal.horaReuniao : null,
+                motivoStandby: status === 'Standby' ? registroOriginal.motivoStandby : null,
+                dataLembrete: status === 'Standby' ? registroOriginal.dataLembrete : null,
+                dataAvaliacao: status === 'Sucesso' ? editForm.elements['edit-data-avaliacao'].value : null,
+                valorPago: status === 'Sucesso' ? parseFloat(editForm.elements['edit-valor-pago'].value) || null : null,
+                nomePagador: status === 'Sucesso' ? editForm.elements['edit-nome-pagador'].value : null,
+                formaPagamento: status === 'Sucesso' ? editForm.elements['edit-forma-pagamento'].value : null,
+                clubeDestino: status === 'Sucesso' ? editForm.elements['edit-clube-destino'].value.trim() : null,
+                motivo: status === 'Falha' ? editForm.elements['edit-motivo-falha'].value : null
+            };
+            await updateDoc(doc(db, "captacoes", id), dadosAtualizados);
+            fecharModalDeEdicao();
+        });
+        addLeadBtn.addEventListener('click', () => {
+            leadForm.reset();
+            suggestionResults.classList.add('hidden');
+            leadModal.style.display = 'flex';
+        });
+        closeLeadModalBtn.addEventListener('click', () => {
+            leadModal.style.display = 'none';
+        });
+        leadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const lead = {
+                nome: document.getElementById('lead-nome').value,
+                anoNascimento: parseInt(document.getElementById('lead-ano-nascimento').value),
+                estado: document.getElementById('lead-estado').value,
+                telefone: document.getElementById('lead-telefone').value,
+                posicao: document.getElementById('lead-posicao').value,
+            };
+            suggestionLeadName.textContent = lead.nome;
+            const sugestoes = sugerirCaptador(lead, todosOsDados);
+            const sugestoesUnicas = Array.from(new Set(sugestoes.map(s => s.id)))
+                .map(id => sugestoes.find(s => s.id === id));
+            suggestionList.innerHTML = '';
+            if (sugestoesUnicas && sugestoesUnicas.length > 0) {
+                suggestionEmpty.style.display = 'none';
+                sugestoesUnicas.forEach((captador, index) => {
+                    const medalhas = ['🥇', '🥈', '🥉'];
+                    const card = document.createElement('div');
+                    card.className = 'bg-gray-900 p-4 rounded-lg flex items-center justify-between';
+                    card.innerHTML = `
+                        <div>
+                            <h4 class="text-lg font-bold text-white">${index < 3 ? medalhas[index] : ''} ${captador.nome}</h4>
+                            <p class="text-xs text-gray-400 mt-1">
+                                Sucesso no Estado: <span class="font-semibold text-orange-300">${captador.displayMetrics.taxaSucessoEstado}%</span> |
+                                Sucesso por Idade: <span class="font-semibold text-orange-300">${captador.displayMetrics.taxaSucessoIdade}%</span> |
+                                Leads Atuais: <span class="font-semibold text-orange-300">${captador.displayMetrics.cargaTrabalho}</span>
+                            </p>
+                        </div>
+                        <button class="assign-btn bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-md">Atribuir</button>
+                    `;
+                    card.querySelector('.assign-btn').addEventListener('click', (event) => atribuirLead(lead, captador, event));
+                    suggestionList.appendChild(card);
+                });
+            } else {
+                suggestionEmpty.style.display = 'block';
+            }
+            suggestionResults.classList.remove('hidden');
+        });
+        avisoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mensagem = avisoMensagem.value.trim();
+            if (!mensagem) return;
+            avisoSubmitBtn.disabled = true;
+            avisoSubmitBtn.textContent = 'Enviando...';
+            const captadorIds = [...new Set(todosOsDados.map(d => d.captadorId).filter(id => id))];
+            if (captadorIds.length === 0) {
+                alert("Nenhum captador encontrado para notificar.");
+                avisoSubmitBtn.disabled = false;
+                avisoSubmitBtn.textContent = 'Enviar Aviso';
+                return;
+            }
+            const promessasDeNotificacao = captadorIds.map(id => {
+                return addDoc(collection(db, "notificacoes"), {
+                    destinatarioId: id,
+                    mensagem: mensagem,
+                    tipo: 'aviso_geral',
+                    lida: false,
+                    timestamp: serverTimestamp(),
+                    remetenteNome: 'Gestão'
+                });
+            });
+            try {
+                await Promise.all(promessasDeNotificacao);
+                alert('Aviso enviado com sucesso para todos os captadores!');
+                avisoForm.reset();
+            } catch (error) {
+                console.error("Erro ao enviar avisos: ", error);
+                alert('Ocorreu um erro ao enviar o aviso.');
+            } finally {
+                avisoSubmitBtn.disabled = false;
+                avisoSubmitBtn.textContent = 'Enviar Aviso';
+            }
+        });
+        async function confirmarCaptacao(id) {
+            const docRef = doc(db, "captacoes", id);
+            const captacao = todosOsDados.find(d => d.id === id);
+            if (!captacao || !captacao.captadorId) {
+                alert("Erro: Registro ou ID do captador não encontrado.");
+                return;
+            }
+            try {
+                await updateDoc(docRef, {
+                    confirmado: true
+                });
+                const mensagem = `Sua captação de '${captacao.nome}' foi confirmada! Parabéns! 🚀`;
+                await addDoc(collection(db, "notificacoes"), {
+                    destinatarioId: captacao.captadorId,
+                    mensagem: mensagem,
+                    tipo: 'confirmacao',
+                    lida: false,
+                    timestamp: serverTimestamp(),
+                    remetenteNome: 'Gestão'
+                });
+                alert('Captação confirmada e captador notificado com sucesso!');
+            } catch (error) {
+                console.error("Erro ao confirmar captação: ", error);
+                alert("Não foi possível confirmar a captação. Tente novamente.");
+            }
+        }
+        // --- FUNÇÕES E LISTENERS PARA BACKUP ---
+        exportDataBtn.addEventListener('click', () => {
+            if (todosOsDados.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+            const dadosParaExportar = todosOsDados.map(({
+                id,
+                ...resto
+            }) => resto);
+            dadosParaExportar.forEach(d => {
+                if(d.criadoEm && typeof d.criadoEm === 'object') {
+                    delete d.criadoEm;
+                }
+            });
+            const dataStr = JSON.stringify(dadosParaExportar, null, 2);
+            const dataBlob = new Blob([dataStr], {
+                type: "application/json"
+            });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            const dataHoje = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `backup_mindsoccer_${dataHoje}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Exportação concluída com sucesso!');
+        });
+        importTriggerBtn.addEventListener('click', () => {
+            importFileInput.click();
+        });
+        importFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                importFileName.textContent = '';
+                return;
+            }
+            importFileName.textContent = `Arquivo selecionado: ${file.name}`;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const dadosImportados = JSON.parse(e.target.result);
+                    if (!Array.isArray(dadosImportados)) {
+                        throw new Error('O arquivo de backup deve ser um array de registros.');
+                    }
+                    if (dadosImportados.length === 0) {
+                        alert('O arquivo de backup está vazio.');
+                        return;
+                    }
+                    const confirmacao = confirm(`Você está prestes a importar ${dadosImportados.length} registros. Eles serão ADICIONADOS ao banco de dados existente. Deseja continuar?`);
+                    if (!confirmacao) return;
+                    const batch = writeBatch(db);
+                    dadosImportados.forEach(registro => {
+                        const newDocRef = doc(collection(db, "captacoes"));
+                        if (!registro.criadoEm) {
+                            registro.criadoEm = serverTimestamp();
+                        }
+                        batch.set(newDocRef, registro);
+                    });
+                    await batch.commit();
+                    alert(`${dadosImportados.length} registros importados com sucesso! Os novos dados aparecerão em breve.`);
+                } catch (error) {
+                    console.error('Erro ao importar dados:', error);
+                    alert(`Falha na importação. Verifique se o arquivo JSON é válido. Erro: ${error.message}`);
+                } finally {
+                    importFileInput.value = '';
+                    importFileName.textContent = '';
+                }
+            };
+            reader.readAsText(file);
+        });
+        clearDataBtn.addEventListener('click', async () => {
+            const primeiraConfirmacao = confirm("TEM CERTEZA ABSOLUTA? Esta ação excluirá TODOS os registros de captações e não pode ser desfeita. É altamente recomendável fazer um backup antes.");
+            if (!primeiraConfirmacao) return;
+            const segundaConfirmacao = prompt('Para confirmar a exclusão de todos os dados, digite "LIMPAR DADOS" no campo abaixo.');
+            if (segundaConfirmacao !== "LIMPAR DADOS") {
+                alert("Confirmação incorreta. A operação foi cancelada.");
+                return;
+            }
+            clearDataBtn.disabled = true;
+            clearDataBtn.textContent = 'Excluindo...';
+            try {
+                const captacoesRef = collection(db, "captacoes");
+                const querySnapshot = await getDocs(captacoesRef);
+                const batch = writeBatch(db);
+                querySnapshot.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                await batch.commit();
+                alert('Todos os dados da coleção "captacoes" foram excluídos com sucesso.');
+            } catch (error) {
+                console.error("Erro ao limpar os dados: ", error);
+                alert("Ocorreu um erro ao tentar limpar os dados. Verifique o console para mais detalhes.");
+            } finally {
+                clearDataBtn.disabled = false;
+                clearDataBtn.textContent = 'Limpar Todos os Dados';
+            }
+        });
+    </script>
+</body>
+
+</html>
