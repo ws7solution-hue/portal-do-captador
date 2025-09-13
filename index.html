@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portal do Captador - MindSoccer</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="MindSoccer" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -51,9 +48,7 @@
         </h1>
         <form id="login-form" class="space-y-6">
           <div>
-            <label
-              for="name"
-              class="block text-sm font-medium text-gray-300"
+            <label for="name" class="block text-sm font-medium text-gray-300"
               >Seu Nome Completo</label
             >
             <input
@@ -64,9 +59,7 @@
             />
           </div>
           <div>
-            <label
-              for="email"
-              class="block text-sm font-medium text-gray-300"
+            <label for="email" class="block text-sm font-medium text-gray-300"
               >Email</label
             >
             <input
@@ -77,9 +70,7 @@
             />
           </div>
           <div>
-            <label
-              for="password"
-              class="block text-sm font-medium text-gray-300"
+            <label for="password" class="block text-sm font-medium text-gray-300"
               >Senha</label
             >
             <input
@@ -93,7 +84,7 @@
             type="submit"
             class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md transition"
           >
-            Entrar / Registrar
+            Entrar
           </button>
           <p id="login-error" class="text-red-400 text-sm text-center"></p>
         </form>
@@ -177,9 +168,7 @@
           <form id="captacao-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
               <div>
-                <label
-                  for="atleta-nome"
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label for="atleta-nome" class="block text-sm font-medium text-gray-300 mb-1"
                   >Nome do Atleta</label
                 >
                 <input
@@ -204,9 +193,7 @@
                 />
               </div>
               <div>
-                <label
-                  for="atleta-estado"
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label for="atleta-estado" class="block text-sm font-medium text-gray-300 mb-1"
                   >Estado</label
                 >
                 <select
@@ -245,9 +232,7 @@
                 </select>
               </div>
               <div>
-                <label
-                  for="atleta-telefone"
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label for="atleta-telefone" class="block text-sm font-medium text-gray-300 mb-1"
                   >Telefone</label
                 >
                 <input
@@ -272,9 +257,7 @@
                 />
               </div>
               <div>
-                <label
-                  for="atleta-posicao"
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label for="atleta-posicao" class="block text-sm font-medium text-gray-300 mb-1"
                   >Posição</label
                 >
                 <select
@@ -293,9 +276,7 @@
             </div>
             <div class="space-y-4">
               <div>
-                <label
-                  for="data-contato"
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label for="data-contato" class="block text-sm font-medium text-gray-300 mb-1"
                   >Data do Contato</label
                 >
                 <input
@@ -306,8 +287,7 @@
                 />
               </div>
               <div>
-                <label
-                  class="block text-sm font-medium text-gray-300 mb-1"
+                <label class="block text-sm font-medium text-gray-300 mb-1"
                   >Status</label
                 >
                 <div class="flex flex-wrap gap-x-4 gap-y-2 mt-2">
@@ -320,9 +300,7 @@
                       class="text-yellow-500"
                       checked
                     />
-                    <label
-                      for="status-aguardando"
-                      class="ml-2 text-yellow-400"
+                    <label for="status-aguardando" class="ml-2 text-yellow-400"
                       >Aguardando</label
                     >
                   </div>
@@ -334,9 +312,7 @@
                       value="Reunião Agendada"
                       class="text-cyan-500"
                     />
-                    <label
-                      for="status-reuniao"
-                      class="ml-2 text-cyan-400"
+                    <label for="status-reuniao" class="ml-2 text-cyan-400"
                       >Reunião</label
                     >
                   </div>
@@ -348,9 +324,7 @@
                       value="Sucesso"
                       class="text-green-500"
                     />
-                    <label
-                      for="status-sucesso"
-                      class="ml-2 text-green-400"
+                    <label for="status-sucesso" class="ml-2 text-green-400"
                       >Sucesso</label
                     >
                   </div>
@@ -374,9 +348,7 @@
                       value="Standby"
                       class="text-indigo-500"
                     />
-                    <label
-                      for="status-standby"
-                      class="ml-2 text-indigo-400"
+                    <label for="status-standby" class="ml-2 text-indigo-400"
                       >Standby</label
                     >
                   </div>
@@ -926,7 +898,6 @@
         addDoc,
         query,
         where,
-        getDocs,
         doc,
         deleteDoc,
         updateDoc,
@@ -944,7 +915,6 @@
         messagingSenderId: "855191571293",
         appId: "1:855191571293:web:d84fa499cc184ef73f76b4",
       };
-
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
@@ -963,9 +933,7 @@
       const notificationBadge = document.getElementById('notification-badge');
       const notificationModal = document.getElementById('notification-modal');
       const notificationList = document.getElementById('notification-list');
-      const notificationCloseBtn = document.getElementById(
-        'notification-close-btn'
-      );
+      const notificationCloseBtn = document.getElementById('notification-close-btn');
       const filterContainer = document.getElementById('filter-container');
       const searchInput = document.getElementById('search-input');
       const statsContainer = document.getElementById('stats-container');
@@ -1020,13 +988,12 @@
           (c) => c.status === 'Sucesso'
         ).length;
         const totalFalha = contatos.filter((c) => c.status === 'Falha').length;
-
         statsContainer.innerHTML = `
-        <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-gray-200">${totalContatos}</p><p class="text-xs text-gray-400">Total de Registros</p></div>
-        <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-cyan-400">${totalReunioes}</p><p class="text-xs text-gray-400">Reuniões Agendadas</p></div>
-        <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-green-400">${totalSucesso}</p><p class="text-xs text-gray-400">Sucessos</p></div>
-        <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-red-400">${totalFalha}</p><p class="text-xs text-gray-400">Falhas</p></div>
-      `;
+          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-gray-200">${totalContatos}</p><p class="text-xs text-gray-400">Total de Registros</p></div>
+          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-cyan-400">${totalReunioes}</p><p class="text-xs text-gray-400">Reuniões Agendadas</p></div>
+          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-green-400">${totalSucesso}</p><p class="text-xs text-gray-400">Sucessos</p></div>
+          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-red-400">${totalFalha}</p><p class="text-xs text-gray-400">Falhas</p></div>
+        `;
       }
 
       // --- Funções de Notificação ---
@@ -1037,7 +1004,6 @@
           where("destinatarioId", "==", currentUser.uid),
           orderBy("timestamp", "desc")
         );
-
         onSnapshot(
           q,
           (snapshot) => {
@@ -1059,21 +1025,17 @@
       function renderizarListaDeNotificacoes() {
         notificationList.innerHTML = '';
         if (minhasNotificacoes.length === 0) {
-          notificationList.innerHTML =
-            '<p class="text-gray-500 text-center py-4">Nenhuma notificação ainda.</p>';
+          notificationList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma notificação ainda.</p>';
           return;
         }
-
         minhasNotificacoes.forEach((n) => {
           const item = document.createElement('div');
           const icon =
-            n.tipo === 'confirmacao'
-              ? '<span class="text-2xl">✅</span>'
-              : '<span class="text-2xl">📢</span>';
+            n.tipo === 'confirmacao' ?
+            '<span class="text-2xl">✅</span>' :
+            '<span class="text-2xl">📢</span>';
           item.className = `p-4 rounded-lg flex items-start gap-4 transition ${
-            n.lida
-              ? 'bg-gray-700/50'
-              : 'bg-blue-900/40 border border-blue-700'
+            n.lida ? 'bg-gray-700/50' : 'bg-blue-900/40 border border-blue-700'
           }`;
           item.innerHTML = `<div>${icon}</div><div class="flex-1"><p class="text-gray-200 text-sm">${
             n.mensagem
@@ -1089,9 +1051,10 @@
           .filter((n) => !n.lida)
           .map((n) => n.id);
         if (naoLidasIds.length === 0) return;
-
         const promessasDeUpdate = naoLidasIds.map((id) =>
-          updateDoc(doc(db, "notificacoes", id), { lida: true })
+          updateDoc(doc(db, "notificacoes", id), {
+            lida: true
+          })
         );
         try {
           await Promise.all(promessasDeUpdate);
@@ -1106,7 +1069,6 @@
         const diffMinutos = Math.round(diffSegundos / 60);
         const diffHoras = Math.round(diffMinutos / 60);
         const diffDias = Math.round(diffHoras / 24);
-
         if (diffSegundos < 60) return `agora mesmo`;
         if (diffMinutos < 60) return `há ${diffMinutos} min`;
         if (diffHoras < 24) return `há ${diffHoras}h`;
@@ -1127,7 +1089,6 @@
       function processarLembretes(contatos) {
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
-
         lembretesAtivos = contatos.filter((c) => {
           if (c.status === 'Standby' && c.dataLembrete) {
             const dataLembrete = new Date(c.dataLembrete + 'T00:00:00');
@@ -1135,7 +1096,6 @@
           }
           return false;
         });
-
         lembreteBadge.textContent = lembretesAtivos.length;
         lembreteBadge.classList.toggle('hidden', lembretesAtivos.length === 0);
         renderizarLembretes();
@@ -1148,7 +1108,6 @@
             '<p class="text-gray-500 text-center py-4">Nenhum lembrete ativo no momento.</p>';
           return;
         }
-
         lembretesAtivos.forEach((lembrete) => {
           const item = document.createElement('div');
           item.className =
@@ -1156,42 +1115,35 @@
           const dataLembreteFmt = new Date(
             lembrete.dataLembrete + 'T00:00:00'
           ).toLocaleDateString('pt-BR');
-
           item.innerHTML = `
-        <div class="flex justify-between items-center">
-          <p class="font-bold text-gray-100">${lembrete.nome}</p>
-          <p class="text-xs font-semibold text-blue-300">Lembrete: ${dataLembreteFmt}</p>
-        </div>
-        <p class="text-sm text-gray-300 mt-1"><strong>Telefone:</strong> ${formatarTelefone(
-          lembrete.telefone
-        )}</p>
-        <p class="text-sm text-gray-400 mt-2 bg-gray-900/50 p-2 rounded"><strong>Anotação:</strong> ${
-          lembrete.motivoStandby || 'Nenhuma'
-        }</p>
-      `;
+            <div class="flex justify-between items-center">
+              <p class="font-bold text-gray-100">${
+                lembrete.nome
+              }</p>
+              <p class="text-xs font-semibold text-blue-300">Lembrete: ${dataLembreteFmt}</p>
+            </div>
+            <p class="text-sm text-gray-300 mt-1"><strong>Telefone:</strong> ${formatarTelefone(
+              lembrete.telefone
+            )}</p>
+            <p class="text-sm text-gray-400 mt-2 bg-gray-900/50 p-2 rounded"><strong>Anotação:</strong> ${
+              lembrete.motivoStandby || 'Nenhuma'
+            }</p>
+          `;
           lembreteList.appendChild(item);
         });
       }
 
-      lembreteBell.addEventListener(
-        'click',
-        () => (lembreteModal.style.display = 'flex')
-      );
-      lembreteCloseBtn.addEventListener(
-        'click',
-        () => (lembreteModal.style.display = 'none')
-      );
+      lembreteBell.addEventListener('click', () => (lembreteModal.style.display = 'flex'));
+      lembreteCloseBtn.addEventListener('click', () => (lembreteModal.style.display = 'none'));
 
       // --- Lógica de Autenticação e Carregamento ---
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (user) {
-          userDisplay.textContent = `Captador: ${
-            user.displayName || user.email
-          }`;
+          userDisplay.textContent = `Captador: ${user.displayName || user.email}`;
           loginContainer.classList.add('hidden');
           appContainer.classList.remove('hidden');
-          carregarContatos();
+          escutarContatos();
           escutarNotificacoes();
         } else {
           loginContainer.classList.remove('hidden');
@@ -1215,27 +1167,6 @@
           )}-${numeroLimpo.substring(6)}`;
         }
         return numero;
-      }
-
-      // NOVO: Função para formatar a hora para HH:mm
-      function formatTime(timeString) {
-        if (!timeString) return null;
-        // Expressão regular para verificar o formato HH:mm
-        const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (regex.test(timeString)) {
-          return timeString; // Já está no formato correto
-        }
-        
-        // Tentativa de formatação para casos como o iOS
-        try {
-          const [hour, minute] = timeString.split(':');
-          const formattedHour = hour.padStart(2, '0');
-          const formattedMinute = minute.padStart(2, '0');
-          return `${formattedHour}:${formattedMinute}`;
-        } catch (e) {
-          console.error("Não foi possível formatar a hora:", timeString);
-          return null; // Retorna null em caso de erro
-        }
       }
 
       const aplicarMascaraTelefone = (event) => {
@@ -1270,34 +1201,13 @@
 
       document.getElementById('login-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         document.getElementById('login-error').textContent = '';
 
         signInWithEmailAndPassword(auth, email, password).catch((error) => {
-          if (
-            error.code === 'auth/user-not-found' ||
-            error.code === 'auth/invalid-credential'
-          ) {
-            if (!name) {
-              document.getElementById('login-error').textContent =
-                'Preencha seu nome para o primeiro acesso.';
-              return;
-            }
-            createUserWithEmailAndPassword(auth, email, password)
-              .then((userCredential) =>
-                updateProfile(userCredential.user, {
-                  displayName: name,
-                })
-              )
-              .catch(
-                (err) =>
-                  (document.getElementById('login-error').textContent = `Erro: ${err.message}`)
-              );
-          } else {
-            document.getElementById('login-error').textContent = `Erro. Verifique e-mail e senha.`;
-          }
+          document.getElementById('login-error').textContent = `Falha no login. Verifique o email e a senha.`;
+          console.error("Erro de login:", error);
         });
       });
 
@@ -1306,14 +1216,10 @@
       captacaoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
-
         const submitButton = document.getElementById('submit-button');
         submitButton.disabled = true;
         submitButton.textContent = 'Enviando...';
-
-        const status = captacaoForm.querySelector('input[name="status"]:checked')
-          .value;
-
+        const status = captacaoForm.querySelector('input[name="status"]:checked').value;
         try {
           const novoContato = {
             captadorId: currentUser.uid,
@@ -1325,9 +1231,10 @@
               document.getElementById('atleta-ano-nascimento').value
             ),
             estado: document.getElementById('atleta-estado').value,
-            telefone: document
-              .getElementById('atleta-telefone')
-              .value.replace(/\D/g, ''),
+            telefone: document.getElementById('atleta-telefone').value.replace(
+              /\D/g,
+              ''
+            ),
             telefoneResponsavel: document
               .getElementById('responsavel-telefone')
               .value.replace(/\D/g, ''),
@@ -1336,50 +1243,30 @@
             status: status,
             confirmado: status === 'Sucesso' ? false : null,
             previsaoResposta:
-              status === 'Aguardando'
-                ? document.getElementById('previsao-resposta').value
-                : null,
+              status === 'Aguardando' ?
+              document.getElementById('previsao-resposta').value :
+              null,
             dataAvaliacao:
-              status === 'Sucesso'
-                ? document.getElementById('data-avaliacao').value
-                : null,
+              status === 'Sucesso' ? document.getElementById('data-avaliacao').value : null,
             valorPago:
-              status === 'Sucesso'
-                ? parseFloat(document.getElementById('valor-pago').value) || 0
-                : null,
+              status === 'Sucesso' ? parseFloat(document.getElementById('valor-pago').value) || 0 : null,
             formaPagamento:
-              status === 'Sucesso'
-                ? document.getElementById('forma-pagamento').value
-                : null,
+              status === 'Sucesso' ? document.getElementById('forma-pagamento').value : null,
             nomePagador:
-              status === 'Sucesso'
-                ? document.getElementById('nome-pagador').value
-                : null,
+              status === 'Sucesso' ? document.getElementById('nome-pagador').value : null,
             clubeDestino:
-              status === 'Sucesso'
-                ? document.getElementById('clube-destino').value
-                : null,
+              status === 'Sucesso' ? document.getElementById('clube-destino').value : null,
             motivo:
-              status === 'Falha'
-                ? document.getElementById('motivo-falha').value
-                : '',
+              status === 'Falha' ? document.getElementById('motivo-falha').value : '',
             dataReuniao:
-              status === 'Reunião Agendada'
-                ? document.getElementById('data-reuniao').value
-                : null,
-            // Linha alterada para usar a nova função
+              status === 'Reunião Agendada' ? document.getElementById('data-reuniao').value : null,
             horaReuniao:
-              status === 'Reunião Agendada'
-                ? formatTime(document.getElementById('hora-reuniao').value)
-                : null,
+              status === 'Reunião Agendada' ? document.getElementById('hora-reuniao').value : null,
             motivoStandby:
-              status === 'Standby'
-                ? document.getElementById('motivo-standby').value
-                : null,
+              status === 'Standby' ? document.getElementById('motivo-standby').value : null,
             dataLembrete:
-              status === 'Standby'
-                ? document.getElementById('data-lembrete').value
-                : null,
+              status === 'Standby' ? document.getElementById('data-lembrete').value : null,
+            // MODIFICAÇÃO: Adiciona o array de histórico com o primeiro registro
             historicoStatus: [
               {
                 status: status,
@@ -1388,12 +1275,10 @@
               },
             ],
           };
-
           await addDoc(collection(db, "captacoes"), novoContato);
           captacaoForm.reset();
           document.getElementById('data-contato').valueAsDate = new Date();
           toggleStatusFields();
-          await carregarContatos();
         } catch (error) {
           console.error("Erro ao salvar registro:", error);
           alert("Ocorreu um erro ao salvar. Tente novamente.");
@@ -1403,24 +1288,20 @@
         }
       });
 
-      async function carregarContatos() {
+      function escutarContatos() {
         if (!currentUser) return;
-
         contatosList.innerHTML = '<p class="text-gray-400">Carregando...</p>';
-
         const q = query(
           collection(db, "captacoes"),
           where("captadorId", "==", currentUser.uid),
           orderBy("criadoEm", "desc")
         );
 
-        try {
-          const querySnapshot = await getDocs(q);
+        onSnapshot(q, (querySnapshot) => {
           meusContatos = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
-
           const captsConfirmadas = meusContatos.filter(
             (c) => c.status === 'Sucesso' && c.confirmado === true
           ).length;
@@ -1428,35 +1309,33 @@
           atualizarEstatisticas(meusContatos);
           processarLembretes(meusContatos);
           renderizarContatos();
-        } catch (error) {
+        }, (error) => {
           console.error("Erro ao carregar contatos: ", error);
           contatosList.innerHTML = `<div class="text-center text-red-400 p-4 bg-red-900/50 rounded-lg"><p><strong>Erro ao buscar dados.</strong></p></div>`;
-        }
+        });
       }
 
       function renderizarContatos() {
         contatosList.innerHTML = '';
         const termoBusca = searchInput.value.toLowerCase().trim();
         let contatosFiltrados =
-          filtroAtual === 'todos'
-            ? meusContatos
-            : meusContatos.filter((c) => c.status === filtroAtual);
+          filtroAtual === 'todos' ?
+          meusContatos :
+          meusContatos.filter((c) => c.status === filtroAtual);
 
         if (termoBusca) {
           contatosFiltrados = contatosFiltrados.filter((contato) => {
             const nome = (contato.nome || '').toLowerCase();
             const ano = String(contato.anoNascimento || '');
             const telefone = (contato.telefone || '').toLowerCase();
-            const responsavel = (contato.nomePagador || '').toLowerCase();
-            const telefoneResponsavel = (
-              contato.telefoneResponsavel || ''
-            ).toLowerCase(); // Novo campo
+            const responsavelNome = (contato.nomeResponsavel || '').toLowerCase();
+            const responsavelTelefone = (contato.telefoneResponsavel || '').toLowerCase();
             return (
               nome.includes(termoBusca) ||
               ano.includes(termoBusca) ||
               telefone.includes(termoBusca) ||
-              responsavel.includes(termoBusca) ||
-              telefoneResponsavel.includes(termoBusca) // Novo campo
+              responsavelNome.includes(termoBusca) ||
+              responsavelTelefone.includes(termoBusca)
             );
           });
         }
@@ -1477,13 +1356,14 @@
 
         contatosFiltrados.forEach((contato) => {
           const card = document.createElement('div');
-          let statusClass, statusTextClass, confirmedIndicator = '';
+          let statusClass,
+            statusTextClass,
+            confirmedIndicator = '';
           if (contato.status === 'Sucesso') {
             if (contato.confirmado === true) {
               statusClass = 'border-teal-400';
               statusTextClass = 'text-teal-300';
-              confirmedIndicator =
-                '<span class="text-xs font-bold text-teal-300 ml-2">(Confirmado ✔)</span>';
+              confirmedIndicator = '<span class="text-xs font-bold text-teal-300 ml-2">(Confirmado ✔)</span>';
             } else {
               statusClass = 'border-green-500';
               statusTextClass = 'text-green-400';
@@ -1501,14 +1381,13 @@
             statusClass = 'border-yellow-500';
             statusTextClass = 'text-yellow-400';
           }
-          card.className = `bg-gray-700 p-4 rounded-lg shadow-md border-l-4 fade-in ${statusClass}`;
 
+          card.className = `bg-gray-700 p-4 rounded-lg shadow-md border-l-4 fade-in ${statusClass}`;
           let detalhes = '';
           switch (contato.status) {
             case 'Sucesso':
               const valorFormatado = (contato.valorPago || 0).toLocaleString(
-                'pt-BR',
-                {
+                'pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 }
@@ -1518,11 +1397,11 @@
               }</p><p><strong>Pagamento:</strong> ${valorFormatado} via ${
                 contato.formaPagamento || 'N/A'
               }</p><p><strong>Avaliação:</strong> ${
-                contato.dataAvaliacao
-                  ? new Date(
-                      contato.dataAvaliacao + 'T00:00:00'
-                    ).toLocaleDateString('pt-BR')
-                  : 'N/A'
+                contato.dataAvaliacao ?
+                new Date(contato.dataAvaliacao + 'T00:00:00').toLocaleDateString(
+                  'pt-BR'
+                ) :
+                'N/A'
               }</p><p><strong>Clube:</strong> ${
                 contato.clubeDestino || 'N/A'
               }</p></div>`;
@@ -1538,21 +1417,21 @@
               }</p>`;
               break;
             case 'Reunião Agendada':
-              const dataReuniaoFmt = contato.dataReuniao
-                ? new Date(
-                    contato.dataReuniao + 'T00:00:00'
-                  ).toLocaleDateString('pt-BR')
-                : 'N/A';
+              const dataReuniaoFmt = contato.dataReuniao ?
+                new Date(contato.dataReuniao + 'T00:00:00').toLocaleDateString(
+                  'pt-BR'
+                ) :
+                'N/A';
               detalhes = `<p class="text-sm text-cyan-300 mt-2"><strong>Reunião:</strong> ${dataReuniaoFmt} às ${
                 contato.horaReuniao || 'N/A'
               }</p>`;
               break;
             case 'Standby':
-              const dataLembreteFmt = contato.dataLembrete
-                ? ` | <strong>Lembrete:</strong> ${new Date(
-                    contato.dataLembrete + 'T00:00:00'
-                  ).toLocaleDateString('pt-BR')}`
-                : '';
+              const dataLembreteFmt = contato.dataLembrete ?
+                ` | <strong>Lembrete:</strong> ${new Date(
+                  contato.dataLembrete + 'T00:00:00'
+                ).toLocaleDateString('pt-BR')}` :
+                '';
               detalhes = `<p class="text-sm text-indigo-300 mt-2"><strong>Anotação:</strong> ${
                 contato.motivoStandby || 'Nenhuma anotação.'
               }${dataLembreteFmt}</p>`;
@@ -1560,14 +1439,16 @@
           }
 
           // Adiciona o HTML para a mensagem da gestão, se ela existir
-          const gestorMensagemHtml = contato.mensagemGestor
-            ? `<div class="mt-2 p-2 rounded-md bg-gray-900/50 text-xs italic text-gray-300 border border-gray-700"><strong>Mensagem da Gestão:</strong> ${contato.mensagemGestor}</div>`
-            : '';
+          const gestorMensagemHtml = contato.mensagemGestor ? 
+            `<div class="mt-2 p-2 rounded-md bg-gray-900/50 text-xs italic text-gray-300 border border-gray-700"><strong>Mensagem da Gestão:</strong> ${contato.mensagemGestor}</div>` : 
+            '';
 
-          const dataContatoFormatada = contato.data
-            ? new Date(contato.data + 'T00:00:00').toLocaleDateString('pt-BR')
-            : 'N/A';
-
+          // CORREÇÃO: Define a data de contato com base no campo criadoEm ou data
+          const dataContato = contato.criadoEm ? 
+            new Date(contato.criadoEm.seconds * 1000) : 
+            new Date(contato.data + 'T00:00:00');
+          const dataContatoFormatada = dataContato.toLocaleString('pt-BR');
+          
           let botoesDeAcao = `<button data-id="${contato.id}" class="edit-btn text-xs bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded w-full">Editar</button><button data-id="${contato.id}" class="excluir-btn text-xs bg-gray-600 hover:bg-red-700 text-white py-1 px-3 rounded w-full">Excluir</button>`;
           if (contato.status === 'Falha' || contato.status === 'Standby') {
             botoesDeAcao =
@@ -1576,30 +1457,28 @@
           }
 
           card.innerHTML = `
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="font-bold text-lg">${contato.nome} (Nasc. ${
-            contato.anoNascimento
-          })</p>
-            <p class="text-xs text-gray-400">${
-              contato.posicao
-            } | ${contato.estado} | Tel: ${formatarTelefone(contato.telefone)}</p>
-            <p class="text-xs text-gray-400">Tel. Resp.: ${formatarTelefone(
-              contato.telefoneResponsavel
-            )}</p>
-            <p class="text-sm text-gray-300 mt-2"><strong>Contato em:</strong> ${dataContatoFormatada}</p>
-            ${gestorMensagemHtml}
-            ${detalhes}
-          </div>
-          <div class="flex flex-col items-end space-y-2 flex-shrink-0 ml-4">
-            <span class="text-sm font-semibold ${statusTextClass}">${
-            contato.status
-          }${confirmedIndicator}</span>
-            ${botoesDeAcao}
-          </div>
-        </div>
-      `;
-
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-bold text-lg">${
+                  contato.nome
+                } (Nasc. ${contato.anoNascimento})</p>
+                <p class="text-xs text-gray-400">${
+                  contato.posicao
+                } | ${contato.estado} | Tel: ${formatarTelefone(contato.telefone)}</p>
+                <p class="text-xs text-gray-400">
+                  Responsável: ${contato.nomeResponsavel || 'N/A'} | Tel.: ${formatarTelefone(contato.telefoneResponsavel)}
+                </p>
+                <p class="text-sm text-gray-300 mt-2"><strong>Contato em:</strong> ${dataContatoFormatada}</p>
+                ${gestorMensagemHtml}
+                ${detalhes}
+              </div>
+              <div class="flex flex-col items-end space-y-2 flex-shrink-0 ml-4">
+                <span class="text-sm font-semibold ${statusTextClass}">${
+                  contato.status
+                }${confirmedIndicator}</span>
+                ${botoesDeAcao}
+              </div>
+            </div>`;
           contatosList.appendChild(card);
         });
       }
@@ -1608,14 +1487,12 @@
         const target = e.target.closest('.filter-btn');
         if (!target) return;
         filtroAtual = target.dataset.filter;
-
         document.querySelectorAll('.filter-btn').forEach((btn) => {
           btn.classList.remove('bg-orange-600');
           btn.classList.add('bg-gray-600', 'hover:bg-gray-500');
         });
         target.classList.add('bg-orange-600');
         target.classList.remove('bg-gray-600', 'hover:bg-gray-500');
-
         renderizarContatos();
       });
 
@@ -1624,42 +1501,34 @@
       contatosList.addEventListener('click', async (e) => {
         const button = e.target.closest('button');
         if (!button) return;
-
         const docId = button.getAttribute('data-id');
         if (!docId) return;
 
         if (button.classList.contains('excluir-btn')) {
-          if (
-            confirm('Tem certeza que deseja excluir este registro permanentemente?')
-          ) {
+          if (confirm('Tem certeza que deseja excluir este registro permanentemente?')) {
             await deleteDoc(doc(db, "captacoes", docId));
-            await carregarContatos();
           }
         } else if (button.classList.contains('edit-btn')) {
           const contatoParaEditar = meusContatos.find((c) => c.id === docId);
           if (contatoParaEditar) abrirModalDeEdicao(contatoParaEditar);
         } else if (button.classList.contains('rediscar-btn')) {
-          if (
-            confirm(
-              'Deseja reabrir este contato como "Aguardando" para uma nova tentativa?'
-            )
-          ) {
+          if (confirm('Deseja reabrir este contato como "Aguardando" para uma nova tentativa?')) {
             try {
               const contato = meusContatos.find((c) => c.id === docId);
               const novoRegistroHistorico = {
-                status: 'Aguardando',
-                dataHora: new Date(),
-                alteradoPor: currentUser.displayName,
-                mensagem: 'Contato reaberto para nova tentativa (Rediscar).',
+                  status: 'Aguardando',
+                  dataHora: new Date(),
+                  alteradoPor: currentUser.displayName,
+                  mensagem: 'Contato reaberto para nova tentativa (Rediscar).'
               };
+              
               await updateDoc(doc(db, "captacoes", docId), {
                 status: 'Aguardando',
                 motivo: null,
                 motivoStandby: null,
                 previsaoResposta: 'Contato reaberto para nova tentativa.',
-                historicoStatus: arrayUnion(novoRegistroHistorico),
+                historicoStatus: arrayUnion(novoRegistroHistorico)
               });
-              await carregarContatos();
             } catch (error) {
               console.error("Erro ao tentar rediscar:", error);
               alert("Não foi possível atualizar o contato. Tente novamente.");
@@ -1669,11 +1538,12 @@
       });
 
       function abrirModalDeEdicao(contato) {
-        contatoOriginal = { ...contato };
+        contatoOriginal = { ...contato
+        };
+
         editForm.elements['edit-doc-id'].value = contato.id;
         editForm.elements['edit-atleta-nome'].value = contato.nome;
-        editForm.elements['edit-atleta-ano-nascimento'].value =
-          contato.anoNascimento;
+        editForm.elements['edit-atleta-ano-nascimento'].value = contato.anoNascimento;
         editForm.elements['edit-atleta-estado'].value = contato.estado;
         editForm.elements['edit-atleta-telefone'].value = formatarTelefone(
           contato.telefone
@@ -1682,26 +1552,17 @@
           contato.telefoneResponsavel
         );
         editForm.elements['edit-status'].value = contato.status;
-        editForm.elements['edit-previsao-resposta'].value =
-          contato.previsaoResposta || '';
-        editForm.elements['edit-data-avaliacao'].value =
-          contato.dataAvaliacao || '';
-        editForm.elements['edit-nome-pagador'].value =
-          contato.nomePagador || '';
-        editForm.elements['edit-forma-pagamento'].value =
-          contato.formaPagamento || 'Pix';
+        editForm.elements['edit-previsao-resposta'].value = contato.previsaoResposta || '';
+        editForm.elements['edit-data-avaliacao'].value = contato.dataAvaliacao || '';
+        editForm.elements['edit-nome-pagador'].value = contato.nomePagador || '';
+        editForm.elements['edit-forma-pagamento'].value = contato.formaPagamento || 'Pix';
         editForm.elements['edit-valor-pago'].value = contato.valorPago || '';
-        editForm.elements['edit-clube-destino'].value =
-          contato.clubeDestino || '';
+        editForm.elements['edit-clube-destino'].value = contato.clubeDestino || '';
         editForm.elements['edit-motivo-falha'].value = contato.motivo || '';
-        editForm.elements['edit-data-reuniao'].value =
-          contato.dataReuniao || '';
-        editForm.elements['edit-hora-reuniao'].value =
-          contato.horaReuniao || '';
-        editForm.elements['edit-motivo-standby'].value =
-          contato.motivoStandby || '';
-        editForm.elements['edit-data-lembrete'].value =
-          contato.dataLembrete || '';
+        editForm.elements['edit-data-reuniao'].value = contato.dataReuniao || '';
+        editForm.elements['edit-hora-reuniao'].value = contato.horaReuniao || '';
+        editForm.elements['edit-motivo-standby'].value = contato.motivoStandby || '';
+        editForm.elements['edit-data-lembrete'].value = contato.dataLembrete || '';
 
         toggleEditCampos();
         editModal.style.display = 'flex';
@@ -1710,7 +1571,6 @@
       document
         .getElementById('cancel-edit-btn')
         .addEventListener('click', () => (editModal.style.display = 'none'));
-
       document
         .getElementById('edit-status')
         .addEventListener('change', toggleEditCampos);
@@ -1749,50 +1609,29 @@
           ].value.replace(/\D/g, ''),
           status: statusNovo,
           previsaoResposta:
-            statusNovo === 'Aguardando'
-              ? editForm.elements['edit-previsao-resposta'].value
-              : null,
+            statusNovo === 'Aguardando' ?
+            editForm.elements['edit-previsao-resposta'].value :
+            null,
           dataAvaliacao:
-            statusNovo === 'Sucesso'
-              ? editForm.elements['edit-data-avaliacao'].value
-              : null,
+            statusNovo === 'Sucesso' ? editForm.elements['edit-data-avaliacao'].value : null,
           nomePagador:
-            statusNovo === 'Sucesso'
-              ? editForm.elements['edit-nome-pagador'].value
-              : null,
+            statusNovo === 'Sucesso' ? editForm.elements['edit-nome-pagador'].value : null,
           formaPagamento:
-            statusNovo === 'Sucesso'
-              ? editForm.elements['edit-forma-pagamento'].value
-              : null,
+            statusNovo === 'Sucesso' ? editForm.elements['edit-forma-pagamento'].value : null,
           valorPago:
-            statusNovo === 'Sucesso'
-              ? parseFloat(editForm.elements['edit-valor-pago'].value) || 0
-              : null,
+            statusNovo === 'Sucesso' ? parseFloat(editForm.elements['edit-valor-pago'].value) || 0 : null,
           clubeDestino:
-            statusNovo === 'Sucesso'
-              ? editForm.elements['edit-clube-destino'].value
-              : null,
+            statusNovo === 'Sucesso' ? editForm.elements['edit-clube-destino'].value : null,
           motivo:
-            statusNovo === 'Falha'
-              ? editForm.elements['edit-motivo-falha'].value
-              : null,
+            statusNovo === 'Falha' ? editForm.elements['edit-motivo-falha'].value : null,
           dataReuniao:
-            statusNovo === 'Reunião Agendada'
-              ? editForm.elements['edit-data-reuniao'].value
-              : null,
-          // Linha alterada para usar a nova função
+            statusNovo === 'Reunião Agendada' ? editForm.elements['edit-data-reuniao'].value : null,
           horaReuniao:
-            statusNovo === 'Reunião Agendada'
-              ? formatTime(editForm.elements['edit-hora-reuniao'].value)
-              : null,
+            statusNovo === 'Reuniao Agendada' ? editForm.elements['edit-hora-reuniao'].value : null,
           motivoStandby:
-            statusNovo === 'Standby'
-              ? editForm.elements['edit-motivo-standby'].value
-              : null,
+            statusNovo === 'Standby' ? editForm.elements['edit-motivo-standby'].value : null,
           dataLembrete:
-            statusNovo === 'Standby'
-              ? editForm.elements['edit-data-lembrete'].value
-              : null,
+            statusNovo === 'Standby' ? editForm.elements['edit-data-lembrete'].value : null,
         };
 
         if (statusNovo !== contatoOriginal.status) {
@@ -1810,7 +1649,6 @@
         }
 
         editModal.style.display = 'none';
-        await carregarContatos();
       });
 
       document
@@ -1818,23 +1656,12 @@
         .forEach((radio) => radio.addEventListener('change', toggleStatusFields));
 
       function toggleStatusFields() {
-        const status = document.querySelector('input[name="status"]:checked')
-          .value;
-        document
-          .getElementById('campos-aguardando')
-          .classList.toggle('hidden', status !== 'Aguardando');
-        document
-          .getElementById('campos-sucesso')
-          .classList.toggle('hidden', status !== 'Sucesso');
-        document
-          .getElementById('campos-falha')
-          .classList.toggle('hidden', status !== 'Falha');
-        document
-          .getElementById('campos-reuniao')
-          .classList.toggle('hidden', status !== 'Reunião Agendada');
-        document
-          .getElementById('campos-standby')
-          .classList.toggle('hidden', status !== 'Standby');
+        const status = document.querySelector('input[name="status"]:checked').value;
+        document.getElementById('campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
+        document.getElementById('campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
+        document.getElementById('campos-falha').classList.toggle('hidden', status !== 'Falha');
+        document.getElementById('campos-reuniao').classList.toggle('hidden', status !== 'Reunião Agendada');
+        document.getElementById('campos-standby').classList.toggle('hidden', status !== 'Standby');
       }
 
       document.getElementById('data-contato').valueAsDate = new Date();
