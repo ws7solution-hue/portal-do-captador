@@ -1,1671 +1,1241 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portal do Captador - MindSoccer</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+    />
     <meta name="apple-mobile-web-app-title" content="MindSoccer" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
     />
     <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #111827;
-      }
-      .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
+        /* Cores Base que replicam o estilo das imagens */
+        :root {
+            --bg-dark: #1f2937; /* Base dark background */
+            --card-bg: #2d3748; /* Card background (Meus Registros) */
+            --input-bg: #4a5568; /* Input/field background */
+            --orange-primary: #f97316; /* Cor principal de destaque (Laranja/Cobre) */
+            --text-light: #e5e7eb;
         }
-        to {
-          opacity: 1;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
         }
-      }
-      .modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-      /* Adicionado: Garante rolagem suave com inércia em listas no iOS */
-      .overflow-y-auto {
-        -webkit-overflow-scrolling: touch;
-      }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        /* Estilos de Input/Select conforme as imagens */
+        .form-field {
+            background-color: var(--input-bg);
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--text-light);
+        }
     </style>
-  </head>
-  <body class="text-white">
+</head>
+<body class="text-white">
     <div
-      id="login-container"
-      class="min-h-screen flex items-center justify-center fade-in"
+        id="login-container"
+        class="min-h-screen flex items-center justify-center fade-in"
     >
-      <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center text-orange-400 mb-6">
-          Portal do Captador
-        </h1>
-        <form id="login-form" class="space-y-6">
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-300"
-              >Seu Nome Completo</label
-            >
-            <input
-              type="text"
-              id="name"
-              required
-              class="w-full mt-1 w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-300"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="email"
-              required
-              class="w-full mt-1 w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-300"
-              >Senha</label
-            >
-            <input
-              type="password"
-              id="password"
-              required
-              class="w-full mt-1 w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md transition"
-          >
-            Entrar
-          </button>
-          <p id="login-error" class="text-red-400 text-sm text-center"></p>
-        </form>
-      </div>
-    </div>
-    <div id="app-container" class="container mx-auto p-4 md:p-8 max-w-4xl hidden">
-      <header
-        class="flex flex-wrap gap-y-4 justify-between items-center mb-8 pb-4 border-b border-gray-700"
-      >
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-100">
-            Portal do Captador
-          </h1>
-          <p id="user-display" class="text-sm text-blue-400"></p>
+        <div class="bg-gray-800 p-10 rounded-xl shadow-2xl w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center text-orange-400 mb-6">
+                Portal do Captador
+            </h1>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2"
+                        >Seu Nome Completo</label
+                    >
+                    <input
+                        type="text"
+                        id="name"
+                        required
+                        class="w-full form-field"
+                    />
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2"
+                        >Email</label
+                    >
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                        class="w-full form-field"
+                    />
+                </div>
+                <div>
+                    <label
+                        for="password"
+                        class="block text-sm font-medium text-gray-300 mb-2"
+                        >Senha</label
+                    >
+                    <input
+                        type="password"
+                        id="password"
+                        required
+                        class="w-full form-field"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-lg shadow-orange-600/30"
+                >
+                    Entrar
+                </button>
+                <p id="login-error" class="text-red-400 text-sm text-center pt-2"></p>
+            </form>
         </div>
-        <div class="flex items-center gap-6">
-          <button id="lembrete-bell" class="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-gray-400 hover:text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 19V6.75a2.25 2.25 0 012.25-2.25h1.5A2.25 2.25 0 0115 6.75V19M6 19h12"
-              />
-            </svg>
-            <span
-              id="lembrete-badge"
-              class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden"
-            ></span>
-          </button>
-          <div id="level-display" class="flex flex-col items-center"></div>
-        </div>
-        <div class="text-right flex items-center space-x-4">
-          <button id="notification-bell" class="relative">
-            <svg
-              class="w-6 h-6 text-gray-400 hover:text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              ></path>
-            </svg>
-            <span
-              id="notification-badge"
-              class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden"
-            ></span>
-          </button>
-          <div>
-            <p class="font-semibold text-sm text-gray-300">MindSoccer</p>
-            <button
-              id="logout-btn"
-              class="mt-2 text-xs bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded"
-            >
-              Sair
-            </button>
-          </div>
-        </div>
-      </header>
-      <main>
-        <section id="form-section" class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-          <h2 class="text-xl font-semibold mb-4 text-orange-400">
-            Registrar Novo Contato de Atleta
-          </h2>
-          <form id="captacao-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-              <div>
-                <label for="atleta-nome" class="block text-sm font-medium text-gray-300 mb-1"
-                  >Nome do Atleta</label
-                >
-                <input
-                  type="text"
-                  id="atleta-nome"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label
-                  for="atleta-ano-nascimento"
-                  class="block text-sm font-medium text-gray-300 mb-1"
-                  >Ano de Nascimento</label
-                >
-                <input
-                  type="number"
-                  id="atleta-ano-nascimento"
-                  placeholder="Ex: 2007"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label for="atleta-estado" class="block text-sm font-medium text-gray-300 mb-1"
-                  >Estado</label
-                >
-                <select
-                  id="atleta-estado"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                >
-                  <option value="">Selecione o Estado</option>
-                  <option value="AC">Acre</option>
-                  <option value="AL">Alagoas</option>
-                  <option value="AP">Amapá</option>
-                  <option value="AM">Amazonas</option>
-                  <option value="BA">Bahia</option>
-                  <option value="CE">Ceará</option>
-                  <option value="DF">Distrito Federal</option>
-                  <option value="ES">Espírito Santo</option>
-                  <option value="GO">Goiás</option>
-                  <option value="MA">Maranhão</option>
-                  <option value="MT">Mato Grosso</option>
-                  <option value="MS">Mato Grosso do Sul</option>
-                  <option value="MG">Minas Gerais</option>
-                  <option value="PA">Pará</option>
-                  <option value="PB">Paraíba</option>
-                  <option value="PR">Paraná</option>
-                  <option value="PE">Pernambuco</option>
-                  <option value="PI">Piauí</option>
-                  <option value="RJ">Rio de Janeiro</option>
-                  <option value="RN">Rio Grande do Norte</option>
-                  <option value="RS">Rio Grande do Sul</option>
-                  <option value="RO">Rondônia</option>
-                  <option value="RR">Roraima</option>
-                  <option value="SC">Santa Catarina</option>
-                  <option value="SP">São Paulo</option>
-                  <option value="SE">Sergipe</option>
-                  <option value="TO">Tocantins</option>
-                </select>
-              </div>
-              <div>
-                <label for="atleta-telefone" class="block text-sm font-medium text-gray-300 mb-1"
-                  >Telefone</label
-                >
-                <input
-                  type="tel"
-                  id="atleta-telefone"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  placeholder="(XX) XXXXX-XXXX"
-                />
-              </div>
-              <div>
-                <label
-                  for="responsavel-telefone"
-                  class="block text-sm font-medium text-gray-300 mb-1"
-                  >Telefone do Responsável</label
-                >
-                <input
-                  type="tel"
-                  id="responsavel-telefone"
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  placeholder="(XX) XXXXX-XXXX"
-                />
-              </div>
-              <div>
-                <label for="atleta-posicao" class="block text-sm font-medium text-gray-300 mb-1"
-                  >Posição</label
-                >
-                <select
-                  id="atleta-posicao"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                >
-                  <option>Atacante</option>
-                  <option>Meio-Campo</option>
-                  <option>Volante</option>
-                  <option>Zagueiro</option>
-                  <option>Lateral</option>
-                  <option>Goleiro</option>
-                </select>
-              </div>
-            </div>
-            <div class="space-y-4">
-              <div>
-                <label for="data-contato" class="block text-sm font-medium text-gray-300 mb-1"
-                  >Data do Contato</label
-                >
-                <input
-                  type="date"
-                  id="data-contato"
-                  required
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1"
-                  >Status</label
-                >
-                <div class="flex flex-wrap gap-x-4 gap-y-2 mt-2">
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      id="status-aguardando"
-                      name="status"
-                      value="Aguardando"
-                      class="text-yellow-500"
-                      checked
-                    />
-                    <label for="status-aguardando" class="ml-2 text-yellow-400"
-                      >Aguardando</label
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      id="status-reuniao"
-                      name="status"
-                      value="Reunião Agendada"
-                      class="text-cyan-500"
-                    />
-                    <label for="status-reuniao" class="ml-2 text-cyan-400"
-                      >Reunião</label
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      id="status-sucesso"
-                      name="status"
-                      value="Sucesso"
-                      class="text-green-500"
-                    />
-                    <label for="status-sucesso" class="ml-2 text-green-400"
-                      >Sucesso</label
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      id="status-falha"
-                      name="status"
-                      value="Falha"
-                      class="text-red-500"
-                    />
-                    <label for="status-falha" class="ml-2 text-red-400"
-                      >Falha</label
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      id="status-standby"
-                      name="status"
-                      value="Standby"
-                      class="text-indigo-500"
-                    />
-                    <label for="status-standby" class="ml-2 text-indigo-400"
-                      >Standby</label
-                    >
-                  </div>
-                </div>
-              </div>
-              <div id="campos-aguardando" class="fade-in">
-                <label
-                  for="previsao-resposta"
-                  class="block text-sm font-medium text-gray-300 mb-1"
-                  >Acompanhamento / Previsão de Resposta</label
-                >
-                <textarea
-                  id="previsao-resposta"
-                  rows="3"
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  placeholder="Ex: Mãe pediu para retornar na sexta-feira."
-                ></textarea>
-              </div>
-              <div id="campos-reuniao" class="hidden space-y-4 fade-in">
-                <div>
-                  <label
-                    for="data-reuniao"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Data da Reunião</label
-                  >
-                  <input
-                    type="date"
-                    id="data-reuniao"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="hora-reuniao"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Hora da Reunião</label
-                  >
-                  <input
-                    type="time"
-                    id="hora-reuniao"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-              </div>
-              <div id="campos-standby" class="hidden space-y-4 fade-in">
-                <div>
-                  <label
-                    for="motivo-standby"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Motivo / Próximo Passo</label
-                  >
-                  <textarea
-                    id="motivo-standby"
-                    rows="2"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                    placeholder="Ex: Família pediu para retornar em 3 meses."
-                  ></textarea>
-                </div>
-                <div>
-                  <label
-                    for="data-lembrete"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Data do Lembrete</label
-                  >
-                  <input
-                    type="date"
-                    id="data-lembrete"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-              </div>
-              <div id="campos-sucesso" class="hidden space-y-4 fade-in">
-                <div>
-                  <label
-                    for="data-avaliacao"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Data da Avaliação</label
-                  >
-                  <input
-                    type="date"
-                    id="data-avaliacao"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="nome-pagador"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Nome do Pagador</label
-                  >
-                  <input
-                    type="text"
-                    id="nome-pagador"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="forma-pagamento"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Forma de Pagamento</label
-                  >
-                  <select
-                    id="forma-pagamento"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  >
-                    <option>Pix</option>
-                    <option>Dinheiro</option>
-                    <option>Cartão de Crédito</option>
-                  </select>
-                </div>
-                <div>
-                  <label
-                    for="valor-pago"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Valor Pago (R$)</label
-                  >
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="valor-pago"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="clube-destino"
-                    class="block text-sm font-medium text-gray-300 mb-1"
-                    >Clube de Destino</label
-                  >
-                  <input
-                    type="text"
-                    id="clube-destino"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                    placeholder="Ex: Flamengo, Corinthians..."
-                  />
-                </div>
-              </div>
-              <div id="campos-falha" class="hidden fade-in">
-                <label
-                  for="motivo-falha"
-                  class="block text-sm font-medium text-gray-300 mb-1"
-                  >Motivo da Falha</label
-                >
-                <textarea
-                  id="motivo-falha"
-                  rows="3"
-                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2"
-                  placeholder="Ex: Família sem condições..."
-                ></textarea>
-              </div>
-            </div>
-            <div class="md:col-span-2">
-              <button
-                type="submit"
-                id="submit-button"
-                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md"
-              >
-                Adicionar Registro
-              </button>
-            </div>
-          </form>
-        </section>
-        <section id="contatos-section" class="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="flex flex-wrap gap-4 justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-orange-400">Meus Registros</h2>
-            <div class="relative">
-              <span
-                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-gray-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
-                </svg>
-              </span>
-              <input
-                type="text"
-                id="search-input"
-                placeholder="Filtrar registros..."
-                class="w-full bg-gray-900 border border-gray-600 text-white rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
-              />
-            </div>
-          </div>
-          <div
-            id="stats-container"
-            class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center"
-          ></div>
-          <div id="filter-container" class="flex flex-wrap gap-2 justify-center mb-4">
-            <button
-              data-filter="todos"
-              class="filter-btn bg-orange-600 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Todos
-            </button>
-            <button
-              data-filter="Aguardando"
-              class="filter-btn bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Aguardando
-            </button>
-            <button
-              data-filter="Reunião Agendada"
-              class="filter-btn bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Reunião
-            </button>
-            <button
-              data-filter="Sucesso"
-              class="filter-btn bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Sucesso
-            </button>
-            <button
-              data-filter="Falha"
-              class="filter-btn bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Falha
-            </button>
-            <button
-              data-filter="Standby"
-              class="filter-btn bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 text-sm rounded-md transition"
-            >
-              Standby
-            </button>
-          </div>
-          <div id="aviso-container" class="mb-4"></div>
-          <div
-            id="contatos-list"
-            class="space-y-4 max-h-[32rem] overflow-y-auto pr-2"
-          ></div>
-        </section>
-      </main>
     </div>
-    <div
-      id="edit-modal"
-      class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in"
-    >
-      <div
-        class="bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6 m-4 max-h-[90vh] overflow-y-auto"
-      >
-        <h2 class="text-xl font-semibold text-orange-400 mb-4">
-          Editar Registro
-        </h2>
-        <form id="edit-form" class="space-y-4">
-          <input type="hidden" id="edit-doc-id" />
-          <div>
-            <label for="edit-atleta-nome" class="block text-sm">Nome</label>
-            <input
-              type="text"
-              id="edit-atleta-nome"
-              required
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            />
-          </div>
-          <div>
-            <label for="edit-atleta-ano-nascimento" class="block text-sm"
-              >Ano de Nascimento</label
-            >
-            <input
-              type="number"
-              id="edit-atleta-ano-nascimento"
-              required
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            />
-          </div>
-          <div>
-            <label for="edit-atleta-estado" class="block text-sm">Estado</label>
-            <select
-              id="edit-atleta-estado"
-              required
-              class="w-full bg-gray-700 rounded-md p-2"
-            >
-              <option value="">Selecione o Estado</option>
-              <option value="AC">Acre</option>
-              <option value="AL">Alagoas</option>
-              <option value="AP">Amapá</option>
-              <option value="AM">Amazonas</option>
-              <option value="BA">Bahia</option>
-              <option value="CE">Ceará</option>
-              <option value="DF">Distrito Federal</option>
-              <option value="ES">Espírito Santo</option>
-              <option value="GO">Goiás</option>
-              <option value="MA">Maranhão</option>
-              <option value="MT">Mato Grosso</option>
-              <option value="MS">Mato Grosso do Sul</option>
-              <option value="MG">Minas Gerais</option>
-              <option value="PA">Pará</option>
-              <option value="PB">Paraíba</option>
-              <option value="PR">Paraná</option>
-              <option value="PE">Pernambuco</option>
-              <option value="PI">Piauí</option>
-              <option value="RJ">Rio de Janeiro</option>
-              <option value="RN">Rio Grande do Norte</option>
-              <option value="RS">Rio Grande do Sul</option>
-              <option value="RO">Rondônia</option>
-              <option value="RR">Roraima</option>
-              <option value="SC">Santa Catarina</option>
-              <option value="SP">São Paulo</option>
-              <option value="SE">Sergipe</option>
-              <option value="TO">Tocantins</option>
-            </select>
-          </div>
-          <div>
-            <label for="edit-atleta-telefone" class="block text-sm"
-              >Número</label
-            >
-            <input
-              type="tel"
-              id="edit-atleta-telefone"
-              required
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            />
-          </div>
-          <div>
-            <label for="edit-responsavel-telefone" class="block text-sm"
-              >Telefone do Responsável</label
-            >
-            <input
-              type="tel"
-              id="edit-responsavel-telefone"
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            />
-          </div>
-          <div>
-            <label for="edit-status" class="block text-sm">Status</label>
-            <select
-              id="edit-status"
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            >
-              <option value="Aguardando">Aguardando</option>
-              <option value="Reunião Agendada">Reunião Agendada</option>
-              <option value="Sucesso">Sucesso</option>
-              <option value="Falha">Falha</option>
-              <option value="Standby">Standby</option>
-            </select>
-          </div>
-          <div id="edit-campos-aguardando" class="space-y-4">
-            <label for="edit-previsao-resposta" class="block text-sm"
-              >Acompanhamento</label
-            >
-            <textarea
-              id="edit-previsao-resposta"
-              rows="2"
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            ></textarea>
-          </div>
-          <div id="edit-campos-reuniao" class="space-y-4">
-            <div>
-              <label for="edit-data-reuniao" class="block text-sm"
-                >Data Reunião</label
-              >
-              <input
-                type="date"
-                id="edit-data-reuniao"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label for="edit-hora-reuniao" class="block text-sm"
-                >Hora Reunião</label
-              >
-              <input
-                type="time"
-                id="edit-hora-reuniao"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-          </div>
-          <div id="edit-campos-standby" class="space-y-4">
-            <div>
-              <label for="edit-motivo-standby" class="block text-sm"
-                >Motivo Standby</label
-              >
-              <textarea
-                id="edit-motivo-standby"
-                rows="2"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              ></textarea>
-            </div>
-            <div>
-              <label for="edit-data-lembrete" class="block text-sm"
-                >Data do Lembrete</label
-              >
-              <input
-                type="date"
-                id="edit-data-lembrete"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-          </div>
-          <div id="edit-campos-sucesso" class="space-y-4">
-            <div>
-              <label for="edit-data-avaliacao" class="block text-sm"
-                >Data Avaliação</label
-              >
-              <input
-                type="date"
-                id="edit-data-avaliacao"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label for="edit-nome-pagador" class="block text-sm"
-                >Nome do Pagador</label
-              >
-              <input
-                type="text"
-                id="edit-nome-pagador"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label for="edit-forma-pagamento" class="block text-sm"
-                >Forma de Pagamento</label
-              >
-              <select
-                id="edit-forma-pagamento"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              >
-                <option>Pix</option>
-                <option>Dinheiro</option>
-                <option>Cartão de Crédito</option>
-              </select>
-            </div>
-            <div>
-              <label for="edit-valor-pago" class="block text-sm"
-                >Valor Pago (R$)</label
-              >
-              <input
-                type="number"
-                step="0.01"
-                id="edit-valor-pago"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label for="edit-clube-destino" class="block text-sm"
-                >Clube de Destino</label
-              >
-              <input
-                type="text"
-                id="edit-clube-destino"
-                class="w-full mt-1 bg-gray-700 rounded-md p-2"
-                placeholder="Ex: Flamengo, Corinthians..."
-              />
-            </div>
-          </div>
-          <div id="edit-campos-falha">
-            <label for="edit-motivo-falha" class="block text-sm"
-              >Motivo</label
-            >
-            <textarea
-              id="edit-motivo-falha"
-              rows="2"
-              class="w-full mt-1 bg-gray-700 rounded-md p-2"
-            ></textarea>
-          </div>
-          <div class="flex justify-end space-x-4 pt-4">
-            <button
-              type="button"
-              id="cancel-edit-btn"
-              class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-md"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md"
-            >
-              Salvar
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div
-      id="lembrete-modal"
-      class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in"
-    >
-      <div
-        class="bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6 m-4 max-h-[80vh] flex flex-col"
-      >
-        <div
-          class="flex justify-between items-center mb-4 pb-4 border-b border-gray-700"
+
+    <div id="app-container" class="container mx-auto p-4 max-w-4xl min-h-screen hidden">
+        <header
+            class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-700/50"
         >
-          <h2 class="text-xl font-semibold text-orange-400">
-            Lembretes de Contato
-          </h2>
-          <button
-            id="lembrete-close-btn"
-            class="text-gray-400 hover:text-white text-3xl leading-none"
-          >
-            &times;
-          </button>
-        </div>
-        <div
-          id="lembrete-list"
-          class="flex-grow overflow-y-auto space-y-3"
-        ></div>
-      </div>
-    </div>
-    <div
-      id="notification-modal"
-      class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in"
-    >
-      <div
-        class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6 m-4 max-h-[70vh] flex flex-col"
-      >
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-orange-400">Notificações</h2>
-          <button
-            id="notification-close-btn"
-            class="text-gray-400 hover:text-white text-3xl leading-none"
-          >
-            &times;
-          </button>
-        </div>
-        <div
-          id="notification-list"
-          class="flex-grow overflow-y-auto space-y-3"
-        ></div>
-      </div>
-    </div>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import {
-        getAuth,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword,
-        onAuthStateChanged,
-        signOut,
-        updateProfile,
-      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-      import {
-        getFirestore,
-        collection,
-        addDoc,
-        query,
-        where,
-        doc,
-        deleteDoc,
-        updateDoc,
-        serverTimestamp,
-        orderBy,
-        onSnapshot,
-        arrayUnion,
-      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyANHJr8an_CQDUQQph8PfFx62ZsZhDRSF4",
-        authDomain: "mindsoccer-app.firebaseapp.com",
-        projectId: "mindsoccer-app",
-        storageBucket: "mindsoccer-app.appspot.com",
-        messagingSenderId: "855191571293",
-        appId: "1:855191571293:web:d84fa499cc184ef73f76b4",
-      };
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-
-      const loginContainer = document.getElementById('login-container');
-      const appContainer = document.getElementById('app-container');
-      const userDisplay = document.getElementById('user-display');
-      const logoutBtn = document.getElementById('logout-btn');
-      const captacaoForm = document.getElementById('captacao-form');
-      const contatosList = document.getElementById('contatos-list');
-      const editModal = document.getElementById('edit-modal');
-      const editForm = document.getElementById('edit-form');
-      const avisoContainer = document.getElementById('aviso-container');
-      const levelDisplay = document.getElementById('level-display');
-      const notificationBell = document.getElementById('notification-bell');
-      const notificationBadge = document.getElementById('notification-badge');
-      const notificationModal = document.getElementById('notification-modal');
-      const notificationList = document.getElementById('notification-list');
-      const notificationCloseBtn = document.getElementById('notification-close-btn');
-      const filterContainer = document.getElementById('filter-container');
-      const searchInput = document.getElementById('search-input');
-      const statsContainer = document.getElementById('stats-container');
-      const lembreteBell = document.getElementById('lembrete-bell');
-      const lembreteBadge = document.getElementById('lembrete-badge');
-      const lembreteModal = document.getElementById('lembrete-modal');
-      const lembreteList = document.getElementById('lembrete-list');
-      const lembreteCloseBtn = document.getElementById('lembrete-close-btn');
-
-      let lembretesAtivos = [];
-      let currentUser = null;
-      let meusContatos = [];
-      let minhasNotificacoes = [];
-      let filtroAtual = 'todos';
-      let contatoOriginal = null;
-
-      function determinarNivel(contagem) {
-        const trophyIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6.75a2.25 2.25 0 012.25-2.25h1.5A2.25 2.25 0 0115 6.75V19M6 19h12" /></svg>`;
-        if (contagem < 10)
-          return {
-            nome: 'Blue',
-            cor: 'text-blue-400',
-            icone: trophyIcon.replace('h-8 w-8', 'h-8 w-8 text-blue-400'),
-            progresso: `${contagem} / 10 para Gold`,
-          };
-        if (contagem < 35)
-          return {
-            nome: 'Gold',
-            cor: 'text-yellow-400',
-            icone: trophyIcon.replace('h-8 w-8', 'h-8 w-8 text-yellow-400'),
-            progresso: `${contagem - 10} / 25 para Black`,
-          };
-        return {
-          nome: 'Black',
-          cor: 'text-gray-200',
-          icone: trophyIcon.replace('h-8 w-8', 'h-8 w-8 text-gray-200'),
-          progresso: 'Nível Máximo',
-        };
-      }
-
-      function atualizarDisplayNivel(contagem) {
-        const nivel = determinarNivel(contagem);
-        levelDisplay.innerHTML = `<div class="flex items-center gap-2">${nivel.icone}<span class="font-bold text-xl ${nivel.cor}">${nivel.nome}</span></div><div class="text-xs text-gray-400 mt-1">${nivel.progresso}</div>`;
-      }
-
-      function atualizarEstatisticas(contatos) {
-        const totalContatos = contatos.length;
-        const totalReunioes = contatos.filter(
-          (c) => c.status === 'Reunião Agendada'
-        ).length;
-        const totalSucesso = contatos.filter(
-          (c) => c.status === 'Sucesso'
-        ).length;
-        const totalFalha = contatos.filter((c) => c.status === 'Falha').length;
-        statsContainer.innerHTML = `
-          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-gray-200">${totalContatos}</p><p class="text-xs text-gray-400">Total de Registros</p></div>
-          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-cyan-400">${totalReunioes}</p><p class="text-xs text-gray-400">Reuniões Agendadas</p></div>
-          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-green-400">${totalSucesso}</p><p class="text-xs text-gray-400">Sucessos</p></div>
-          <div class="bg-gray-900/50 p-3 rounded-lg"><p class="text-2xl font-bold text-red-400">${totalFalha}</p><p class="text-xs text-gray-400">Falhas</p></div>
-        `;
-      }
-
-      // --- Funções de Notificação ---
-      function escutarNotificacoes() {
-        if (!currentUser) return;
-        const q = query(
-          collection(db, "notificacoes"),
-          where("destinatarioId", "==", currentUser.uid),
-          orderBy("timestamp", "desc")
-        );
-        onSnapshot(
-          q,
-          (snapshot) => {
-            minhasNotificacoes = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const naoLidas = minhasNotificacoes.filter((n) => !n.lida).length;
-            notificationBadge.textContent = naoLidas;
-            notificationBadge.classList.toggle('hidden', naoLidas === 0);
-            renderizarListaDeNotificacoes();
-          },
-          (error) => {
-            console.error("ERRO GRAVE AO BUSCAR NOTIFICAÇÕES: ", error);
-          }
-        );
-      }
-
-      function renderizarListaDeNotificacoes() {
-        notificationList.innerHTML = '';
-        if (minhasNotificacoes.length === 0) {
-          notificationList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma notificação ainda.</p>';
-          return;
-        }
-        minhasNotificacoes.forEach((n) => {
-          const item = document.createElement('div');
-          const icon =
-            n.tipo === 'confirmacao' ?
-            '<span class="text-2xl">✅</span>' :
-            '<span class="text-2xl">📢</span>';
-          item.className = `p-4 rounded-lg flex items-start gap-4 transition ${
-            n.lida ? 'bg-gray-700/50' : 'bg-blue-900/40 border border-blue-700'
-          }`;
-          item.innerHTML = `<div>${icon}</div><div class="flex-1"><p class="text-gray-200 text-sm">${
-            n.mensagem
-          }</p><p class="text-xs text-gray-400 mt-2">${
-            n.timestamp ? formatarDataRelativa(n.timestamp.toDate()) : ''
-          }</p></div>`;
-          notificationList.appendChild(item);
-        });
-      }
-
-      async function marcarNotificacoesComoLidas() {
-        const naoLidasIds = minhasNotificacoes
-          .filter((n) => !n.lida)
-          .map((n) => n.id);
-        if (naoLidasIds.length === 0) return;
-        const promessasDeUpdate = naoLidasIds.map((id) =>
-          updateDoc(doc(db, "notificacoes", id), {
-            lida: true
-          })
-        );
-        try {
-          await Promise.all(promessasDeUpdate);
-        } catch (error) {
-          console.error("Erro ao marcar notificações como lidas: ", error);
-        }
-      }
-
-      function formatarDataRelativa(data) {
-        const agora = new Date();
-        const diffSegundos = Math.round((agora - data) / 1000);
-        const diffMinutos = Math.round(diffSegundos / 60);
-        const diffHoras = Math.round(diffMinutos / 60);
-        const diffDias = Math.round(diffHoras / 24);
-        if (diffSegundos < 60) return `agora mesmo`;
-        if (diffMinutos < 60) return `há ${diffMinutos} min`;
-        if (diffHoras < 24) return `há ${diffHoras}h`;
-        if (diffDias === 1) return `ontem`;
-        return `há ${diffDias} dias`;
-      }
-
-      notificationBell.addEventListener('click', () => {
-        notificationModal.style.display = 'flex';
-        marcarNotificacoesComoLidas();
-      });
-
-      notificationCloseBtn.addEventListener('click', () => {
-        notificationModal.style.display = 'none';
-      });
-
-      // --- Funções para Lembretes ---
-      function processarLembretes(contatos) {
-        const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-        lembretesAtivos = contatos.filter((c) => {
-          if (c.status === 'Standby' && c.dataLembrete) {
-            const dataLembrete = new Date(c.dataLembrete + 'T00:00:00');
-            return dataLembrete <= hoje;
-          }
-          return false;
-        });
-        lembreteBadge.textContent = lembretesAtivos.length;
-        lembreteBadge.classList.toggle('hidden', lembretesAtivos.length === 0);
-        renderizarLembretes();
-      }
-
-      function renderizarLembretes() {
-        lembreteList.innerHTML = '';
-        if (lembretesAtivos.length === 0) {
-          lembreteList.innerHTML =
-            '<p class="text-gray-500 text-center py-4">Nenhum lembrete ativo no momento.</p>';
-          return;
-        }
-        lembretesAtivos.forEach((lembrete) => {
-          const item = document.createElement('div');
-          item.className =
-            'p-4 rounded-lg bg-gray-700/70 border-l-4 border-blue-500';
-          const dataLembreteFmt = new Date(
-            lembrete.dataLembrete + 'T00:00:00'
-          ).toLocaleDateString('pt-BR');
-          item.innerHTML = `
-            <div class="flex justify-between items-center">
-              <p class="font-bold text-gray-100">${
-                lembrete.nome
-              }</p>
-              <p class="text-xs font-semibold text-blue-300">Lembrete: ${dataLembreteFmt}</p>
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold text-gray-100">Portal do Captador</h1>
+                <p id="user-display" class="text-sm text-blue-400 mt-1"></p>
             </div>
-            <p class="text-sm text-gray-300 mt-1"><strong>Telefone:</strong> ${formatarTelefone(
-              lembrete.telefone
-            )}</p>
-            <p class="text-sm text-gray-400 mt-2 bg-gray-900/50 p-2 rounded"><strong>Anotação:</strong> ${
-              lembrete.motivoStandby || 'Nenhuma'
-            }</p>
-          `;
-          lembreteList.appendChild(item);
-        });
-      }
+            <div class="flex items-center gap-4 flex-shrink-0">
+                <div id="level-display" class="flex flex-col items-center"></div>
+                <button id="lembrete-bell" class="relative p-2 rounded-full hover:bg-gray-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6.75a2.25 2.25 0 012.25-2.25h1.5A2.25 2.25 0 0115 6.75V19M6 19h12" />
+                    </svg>
+                    <span id="lembrete-badge" class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center hidden"></span>
+                </button>
+                <button id="notification-bell" class="relative p-2 rounded-full hover:bg-gray-700 transition">
+                    <svg class="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span id="notification-badge" class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center hidden"></span>
+                </button>
+                <button id="logout-btn" class="text-sm bg-red-700 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition">Sair</button>
+            </div>
+        </header>
 
-      lembreteBell.addEventListener('click', () => (lembreteModal.style.display = 'flex'));
-      lembreteCloseBtn.addEventListener('click', () => (lembreteModal.style.display = 'none'));
+        <main class="space-y-8">
+            <section id="form-section" class="bg-gray-800 p-6 rounded-xl shadow-xl">
+                <h2 class="text-lg font-semibold mb-6 text-orange-400 border-b border-gray-700 pb-3">
+                    Registrar Novo Contato de Atleta
+                </h2>
+                <form id="captacao-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="atleta-nome" class="block text-sm font-medium text-gray-300 mb-1">Nome do Atleta</label>
+                            <input type="text" id="atleta-nome" required class="w-full form-field" />
+                        </div>
+                        <div>
+                            <label for="atleta-ano-nascimento" class="block text-sm font-medium text-gray-300 mb-1">Ano de Nascimento</label>
+                            <input type="number" id="atleta-ano-nascimento" placeholder="Ex: 2007" required class="w-full form-field" />
+                        </div>
+                        <div>
+                            <label for="atleta-estado" class="block text-sm font-medium text-gray-300 mb-1">Estado</label>
+                            <select id="atleta-estado" required class="w-full form-field">
+                                <option value="">Selecione o Estado</option>
+                                <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option><option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="atleta-telefone" class="block text-sm font-medium text-gray-300 mb-1">Telefone</label>
+                            <input type="tel" id="atleta-telefone" required class="w-full form-field" placeholder="(XX) XXXXX-XXXX" />
+                        </div>
+                        <div>
+                            <label for="responsavel-nome" class="block text-sm font-medium text-gray-300 mb-1">Nome do Responsável</label>
+                            <input type="text" id="responsavel-nome" class="w-full form-field" />
+                        </div>
+                        <div>
+                            <label for="responsavel-telefone" class="block text-sm font-medium text-gray-300 mb-1">Telefone do Responsável</label>
+                            <input type="tel" id="responsavel-telefone" class="w-full form-field" placeholder="(XX) XXXXX-XXXX" />
+                        </div>
+                        <div>
+                            <label for="atleta-posicao" class="block text-sm font-medium text-gray-300 mb-1">Posição</label>
+                            <select id="atleta-posicao" required class="w-full form-field">
+                                <option>Atacante</option><option>Meio-Campo</option><option>Volante</option><option>Zagueiro</option><option>Lateral</option><option>Goleiro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="data-contato" class="block text-sm font-medium text-gray-300 mb-1">Data do Contato</label>
+                            <input type="date" id="data-contato" required class="w-full form-field" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Status</label>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 mt-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="status-aguardando" name="status" value="Aguardando" class="text-yellow-500 focus:ring-yellow-500 h-4 w-4 border-gray-300" checked />
+                                    <label for="status-aguardando" class="ml-2 text-sm text-yellow-400">Aguardando</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="status-reuniao" name="status" value="Reunião Agendada" class="text-cyan-500 focus:ring-cyan-500 h-4 w-4 border-gray-300" />
+                                    <label for="status-reuniao" class="ml-2 text-sm text-cyan-400">Reunião</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="status-sucesso" name="status" value="Sucesso" class="text-green-500 focus:ring-green-500 h-4 w-4 border-gray-300" />
+                                    <label for="status-sucesso" class="ml-2 text-sm text-green-400">Sucesso</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="status-falha" name="status" value="Falha" class="text-red-500 focus:ring-red-500 h-4 w-4 border-gray-300" />
+                                    <label for="status-falha" class="ml-2 text-sm text-red-400">Falha</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="status-standby" name="status" value="Standby" class="text-indigo-500 focus:ring-indigo-500 h-4 w-4 border-gray-300" />
+                                    <label for="status-standby" class="ml-2 text-sm text-indigo-400">Standby</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="campos-aguardando" class="fade-in space-y-4">
+                            <label for="previsao-resposta" class="block text-sm font-medium text-gray-300 mb-1">Acompanhamento / Próximo Passo</label>
+                            <textarea id="previsao-resposta" rows="3" class="w-full form-field" placeholder="Ex: Mãe pediu para retornar na sexta-feira."></textarea>
+                            <div class="mt-4 p-3 bg-gray-900/50 rounded-lg border border-gray-700" id="gestor-message-container" style="display:none">
+                                <p class="text-xs font-semibold text-orange-400 mb-1">Mensagem do Gestor (Lead Reatribuído)</p>
+                                <p id="gestor-message" class="text-sm italic text-gray-300">Nenhuma mensagem.</p>
+                            </div>
+                        </div>
+                        <div id="campos-reuniao" class="hidden space-y-4 fade-in">
+                            <div>
+                                <label for="data-reuniao" class="block text-sm font-medium text-gray-300 mb-1">Data da Reunião</label>
+                                <input type="date" id="data-reuniao" class="w-full form-field" />
+                            </div>
+                            <div>
+                                <label for="hora-reuniao" class="block text-sm font-medium text-gray-300 mb-1">Hora da Reunião</label>
+                                <input type="time" id="hora-reuniao" class="w-full form-field" />
+                            </div>
+                        </div>
+                        <div id="campos-standby" class="hidden space-y-4 fade-in">
+                            <div>
+                                <label for="motivo-standby" class="block text-sm font-medium text-gray-300 mb-1">Motivo / Próximo Passo</label>
+                                <textarea id="motivo-standby" rows="2" class="w-full form-field" placeholder="Ex: Família pediu para retornar em 3 meses."></textarea>
+                            </div>
+                            <div>
+                                <label for="data-lembrete" class="block text-sm font-medium text-gray-300 mb-1">Data do Lembrete</label>
+                                <input type="date" id="data-lembrete" class="w-full form-field" />
+                            </div>
+                        </div>
+                        <div id="campos-sucesso" class="hidden space-y-4 fade-in">
+                            <div>
+                                <label for="data-avaliacao" class="block text-sm font-medium text-gray-300 mb-1">Data da Avaliação</label>
+                                <input type="date" id="data-avaliacao" class="w-full form-field" />
+                            </div>
+                            <div>
+                                <label for="nome-pagador" class="block text-sm font-medium text-gray-300 mb-1">Nome do Pagador</label>
+                                <input type="text" id="nome-pagador" class="w-full form-field" />
+                            </div>
+                            <div>
+                                <label for="forma-pagamento" class="block text-sm font-medium text-gray-300 mb-1">Forma de Pagamento</label>
+                                <select id="forma-pagamento" class="w-full form-field">
+                                    <option>Pix</option><option>Dinheiro</option><option>Cartão de Crédito</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="valor-pago" class="block text-sm font-medium text-gray-300 mb-1">Valor Pago (R$)</label>
+                                <input type="number" step="0.01" id="valor-pago" class="w-full form-field" />
+                            </div>
+                            <div>
+                                <label for="clube-destino" class="block text-sm font-medium text-gray-300 mb-1">Clube de Destino</label>
+                                <input type="text" id="clube-destino" class="w-full form-field" placeholder="Ex: Flamengo, Corinthians..." />
+                            </div>
+                        </div>
+                        <div id="campos-falha" class="hidden fade-in">
+                            <label for="motivo-falha" class="block text-sm font-medium text-gray-300 mb-1">Motivo da Falha</label>
+                            <textarea id="motivo-falha" rows="3" class="w-full form-field" placeholder="Ex: Família sem condições..."></textarea>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 pt-2">
+                        <button
+                            type="submit"
+                            id="submit-button"
+                            class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-md"
+                        >
+                            Adicionar Registro
+                        </button>
+                    </div>
+                </form>
+            </section>
 
-      // --- Lógica de Autenticação e Carregamento ---
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        if (user) {
-          userDisplay.textContent = `Captador: ${user.displayName || user.email}`;
-          loginContainer.classList.add('hidden');
-          appContainer.classList.remove('hidden');
-          escutarContatos();
-          escutarNotificacoes();
-        } else {
-          loginContainer.classList.remove('hidden');
-          appContainer.classList.add('hidden');
+            <section id="contatos-section" class="bg-gray-800 p-6 rounded-xl shadow-xl">
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-100">Meus Registros</h2>
+                    <div class="relative w-full sm:w-auto">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </span>
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Filtrar registros..."
+                            class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                        />
+                    </div>
+                </div>
+
+                <div id="stats-container" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 text-center"></div>
+
+                <div id="filter-container" class="flex flex-wrap gap-2 justify-start mb-6">
+                    <button data-filter="todos" class="filter-btn bg-orange-600 text-white px-3 py-1.5 text-sm rounded-lg transition">
+                        Todos
+                    </button>
+                    <button data-filter="Aguardando" class="filter-btn bg-gray-700 hover:bg-gray-600 text-yellow-400 px-3 py-1.5 text-sm rounded-lg transition">
+                        Aguardando
+                    </button>
+                    <button data-filter="Reunião Agendada" class="filter-btn bg-gray-700 hover:bg-gray-600 text-cyan-400 px-3 py-1.5 text-sm rounded-lg transition">
+                        Reunião
+                    </button>
+                    <button data-filter="Sucesso" class="filter-btn bg-gray-700 hover:bg-gray-600 text-green-400 px-3 py-1.5 text-sm rounded-lg transition">
+                        Sucesso
+                    </button>
+                    <button data-filter="Falha" class="filter-btn bg-gray-700 hover:bg-gray-600 text-red-400 px-3 py-1.5 text-sm rounded-lg transition">
+                        Falha
+                    </button>
+                    <button data-filter="Standby" class="filter-btn bg-gray-700 hover:bg-gray-600 text-indigo-400 px-3 py-1.5 text-sm rounded-lg transition">
+                        Standby
+                    </button>
+                </div>
+
+                <div id="aviso-container" class="mb-4"></div>
+
+                <div id="contatos-list" class="space-y-4 max-h-[36rem] overflow-y-auto pr-2 custom-scrollbar">
+                    <p class="text-gray-400 text-center py-4">Carregando...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="edit-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 m-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h2 class="text-xl font-semibold text-orange-400 mb-4">Editar Registro</h2>
+            <form id="edit-form" class="space-y-4">
+                <input type="hidden" id="edit-doc-id" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label for="edit-atleta-nome" class="block text-sm">Nome</label><input type="text" id="edit-atleta-nome" required class="w-full mt-1 form-field" /></div>
+                    <div><label for="edit-atleta-ano-nascimento" class="block text-sm">Ano de Nascimento</label><input type="number" id="edit-atleta-ano-nascimento" required class="w-full mt-1 form-field" /></div>
+                    <div><label for="edit-atleta-estado" class="block text-sm">Estado</label><select id="edit-atleta-estado" required class="w-full mt-1 form-field"><option value="">Selecione o Estado</option><option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option><option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option></select></div>
+                    <div><label for="edit-atleta-telefone" class="block text-sm">Número</label><input type="tel" id="edit-atleta-telefone" required class="w-full mt-1 form-field" /></div>
+                    <div><label for="edit-responsavel-nome" class="block text-sm">Nome do Responsável</label><input type="text" id="edit-responsavel-nome" class="w-full mt-1 form-field" /></div>
+                    <div><label for="edit-responsavel-telefone" class="block text-sm">Telefone do Responsável</label><input type="tel" id="edit-responsavel-telefone" class="w-full mt-1 form-field" /></div>
+                </div>
+                <div><label for="edit-status" class="block text-sm">Status</label><select id="edit-status" class="w-full mt-1 form-field"><option value="Aguardando">Aguardando</option><option value="Reunião Agendada">Reunião Agendada</option><option value="Sucesso">Sucesso</option><option value="Falha">Falha</option><option value="Standby">Standby</option></select></div>
+                <div id="edit-campos-aguardando" class="space-y-4 pt-4 border-t border-gray-700"><label for="edit-previsao-resposta" class="block text-sm">Acompanhamento</label><textarea id="edit-previsao-resposta" rows="2" class="w-full mt-1 form-field"></textarea><div class="mt-4 p-3 bg-gray-900/50 rounded-lg border border-gray-700" id="edit-gestor-message-container" style="display:none"><p class="text-xs font-semibold text-orange-400 mb-1">Mensagem do Gestor (Lead Reatribuído)</p><p id="edit-gestor-message" class="text-sm italic text-gray-300">Nenhuma mensagem.</p></div></div>
+                <div id="edit-campos-reuniao" class="space-y-4 hidden pt-4 border-t border-gray-700"><div><label for="edit-data-reuniao" class="block text-sm">Data Reunião</label><input type="date" id="edit-data-reuniao" class="w-full mt-1 form-field" /></div><div><label for="edit-hora-reuniao" class="block text-sm">Hora Reunião</label><input type="time" id="edit-hora-reuniao" class="w-full mt-1 form-field" /></div></div>
+                <div id="edit-campos-standby" class="space-y-4 hidden pt-4 border-t border-gray-700"><div><label for="edit-motivo-standby" class="block text-sm">Motivo Standby</label><textarea id="edit-motivo-standby" rows="2" class="w-full mt-1 form-field"></textarea></div><div><label for="edit-data-lembrete" class="block text-sm">Data do Lembrete</label><input type="date" id="edit-data-lembrete" class="w-full mt-1 form-field" /></div></div>
+                <div id="edit-campos-sucesso" class="space-y-4 hidden pt-4 border-t border-gray-700"><div><label for="edit-data-avaliacao" class="block text-sm">Data Avaliação</label><input type="date" id="edit-data-avaliacao" class="w-full mt-1 form-field" /></div><div><label for="edit-nome-pagador" class="block text-sm">Nome do Pagador</label><input type="text" id="edit-nome-pagador" class="w-full mt-1 form-field" /></div><div><label for="edit-forma-pagamento" class="block text-sm">Forma de Pagamento</label><select id="edit-forma-pagamento" class="w-full mt-1 form-field"><option>Pix</option><option>Dinheiro</option><option>Cartão de Crédito</option></select></div><div><label for="edit-valor-pago" class="block text-sm">Valor Pago (R$)</label><input type="number" step="0.01" id="edit-valor-pago" class="w-full mt-1 form-field" /></div><div><label for="edit-clube-destino" class="block text-sm">Clube de Destino</label><input type="text" id="edit-clube-destino" class="w-full mt-1 form-field" placeholder="Ex: Flamengo, Corinthians..." /></div></div>
+                <div id="edit-campos-falha" class="hidden pt-4 border-t border-gray-700"><label for="edit-motivo-falha" class="block text-sm">Motivo</label><textarea id="edit-motivo-falha" rows="2" class="w-full mt-1 form-field"></textarea></div>
+                <div class="flex justify-end space-x-4 pt-4"><button type="button" id="cancel-edit-btn" class="bg-gray-600 hover:bg-gray-500 px-4 py-2.5 rounded-lg transition">Cancelar</button><button type="submit" class="bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-lg transition">Salvar</button></div>
+            </form>
+        </div>
+    </div>
+    <div id="lembrete-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 m-4 max-h-[80vh] flex flex-col"><div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-700"><h2 class="text-xl font-semibold text-orange-400">Lembretes de Contato</h2><button id="lembrete-close-btn" class="text-gray-400 hover:text-white text-3xl leading-none">&times;</button></div><div id="lembrete-list" class="flex-grow overflow-y-auto space-y-3 custom-scrollbar"></div></div>
+    </div>
+    <div id="notification-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop fade-in">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-md p-6 m-4 max-h-[70vh] flex flex-col"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-semibold text-orange-400">Notificações</h2><button id="notification-close-btn" class="text-gray-400 hover:text-white text-3xl leading-none">&times;</button></div><div id="notification-list" class="flex-grow overflow-y-auto space-y-3 custom-scrollbar"></div></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            updateProfile,
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            query,
+            where,
+            doc,
+            deleteDoc,
+            updateDoc,
+            serverTimestamp,
+            orderBy,
+            onSnapshot,
+            arrayUnion,
+            or,
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyANHJr8an_CQDUQQph8PfFx62ZsZhDRSF4",
+            authDomain: "mindsoccer-app.firebaseapp.com",
+            projectId: "mindsoccer-app",
+            storageBucket: "mindsoccer-app.appspot.com",
+            messagingSenderId: "855191571293",
+            appId: "1:855191571293:web:d84fa499cc184ef73f76b4",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const loginContainer = document.getElementById('login-container');
+        const appContainer = document.getElementById('app-container');
+        const userDisplay = document.getElementById('user-display');
+        const logoutBtn = document.getElementById('logout-btn');
+        const captacaoForm = document.getElementById('captacao-form');
+        const contatosList = document.getElementById('contatos-list');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+        const avisoContainer = document.getElementById('aviso-container');
+        const levelDisplay = document.getElementById('level-display');
+        const notificationBell = document.getElementById('notification-bell');
+        const notificationBadge = document.getElementById('notification-badge');
+        const notificationModal = document.getElementById('notification-modal');
+        const notificationList = document.getElementById('notification-list');
+        const notificationCloseBtn = document.getElementById('notification-close-btn');
+        const filterContainer = document.getElementById('filter-container');
+        const searchInput = document.getElementById('search-input');
+        const statsContainer = document.getElementById('stats-container');
+        const lembreteBell = document.getElementById('lembrete-bell');
+        const lembreteBadge = document.getElementById('lembrete-badge');
+        const lembreteModal = document.getElementById('lembrete-modal');
+        const lembreteList = document.getElementById('lembrete-list');
+        const lembreteCloseBtn = document.getElementById('lembrete-close-btn');
+        const gestorMessageContainer = document.getElementById('gestor-message-container');
+        const gestorMessage = document.getElementById('gestor-message');
+        const editGestorMessageContainer = document.getElementById('edit-gestor-message-container');
+        const editGestorMessage = document.getElementById('edit-gestor-message');
+
+
+        let lembretesAtivos = [];
+        let currentUser = null;
+        let meusContatos = [];
+        let minhasNotificacoes = [];
+        let filtroAtual = 'todos';
+        let contatoOriginal = null;
+
+        function determinarNivel(contagem) {
+            const trophyIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6.75a2.25 2.25 0 012.25-2.25h1.5A2.25 2.25 0 0115 6.75V19M6 19h12" /></svg>`;
+            if (contagem < 10)
+                return {
+                    nome: 'Blue',
+                    cor: 'text-blue-400',
+                    icone: trophyIcon.replace('h-8 w-8', 'h-5 w-5 text-blue-400'),
+                    progresso: `${contagem} / 10 para Gold`,
+                };
+            if (contagem < 35)
+                return {
+                    nome: 'Gold',
+                    cor: 'text-yellow-400',
+                    icone: trophyIcon.replace('h-8 w-8', 'h-5 w-5 text-yellow-400'),
+                    progresso: `${contagem - 10} / 25 para Black`,
+                };
+            return {
+                nome: 'Black',
+                cor: 'text-gray-200',
+                icone: trophyIcon.replace('h-8 w-8', 'h-5 w-5 text-gray-200'),
+                progresso: 'Nível Máximo',
+            };
         }
-      });
 
-      function formatarTelefone(numero) {
-        if (!numero || typeof numero !== 'string') return 'N/A';
-        const numeroLimpo = numero.replace(/\D/g, '');
-        if (numeroLimpo.length === 11) {
-          return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(
-            2,
-            7
-          )}-${numeroLimpo.substring(7)}`;
+        function atualizarDisplayNivel(contagem) {
+            const nivel = determinarNivel(contagem);
+            levelDisplay.innerHTML = `<div class="flex items-center space-x-1">${nivel.icone}<span class="font-bold text-sm ${nivel.cor}">${nivel.nome}</span></div><div class="text-xs text-gray-400">${nivel.progresso}</div>`;
         }
-        if (numeroLimpo.length === 10) {
-          return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(
-            2,
-            6
-          )}-${numeroLimpo.substring(6)}`;
+
+        function atualizarEstatisticas(contatos) {
+            const totalContatos = contatos.length;
+            const totalReunioes = contatos.filter(
+                (c) => c.status === 'Reunião Agendada'
+            ).length;
+            const totalSucesso = contatos.filter(
+                (c) => c.status === 'Sucesso'
+            ).length;
+            const totalFalha = contatos.filter((c) => c.status === 'Falha').length;
+
+            statsContainer.innerHTML = `
+                <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600"><p class="text-2xl font-bold text-gray-200">${totalContatos}</p><p class="text-xs text-gray-400">Total de Registros</p></div>
+                <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600"><p class="text-2xl font-bold text-cyan-400">${totalReunioes}</p><p class="text-xs text-gray-400">Reuniões Agendadas</p></div>
+                <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600"><p class="text-2xl font-bold text-green-400">${totalSucesso}</p><p class="text-xs text-gray-400">Sucessos</p></div>
+                <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600"><p class="text-2xl font-bold text-red-400">${totalFalha}</p><p class="text-xs text-gray-400">Falhas</p></div>
+            `;
         }
-        return numero;
-      }
 
-      const aplicarMascaraTelefone = (event) => {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, '');
-        value = value.substring(0, 11);
-        if (value.length > 2 && value.length <= 6) {
-          value = `(${value.substring(0, 2)}) ${value.substring(2)}`;
-        } else if (value.length > 6) {
-          value = `(${value.substring(0, 2)}) ${value.substring(
-            2,
-            7
-          )}-${value.substring(7)}`;
-        } else if (value.length > 0) {
-          value = `(${value}`;
-        }
-        input.value = value;
-      };
-
-      document
-        .getElementById('atleta-telefone')
-        .addEventListener('input', aplicarMascaraTelefone);
-      document
-        .getElementById('responsavel-telefone')
-        .addEventListener('input', aplicarMascaraTelefone);
-      document
-        .getElementById('edit-atleta-telefone')
-        .addEventListener('input', aplicarMascaraTelefone);
-      document
-        .getElementById('edit-responsavel-telefone')
-        .addEventListener('input', aplicarMascaraTelefone);
-
-      document.getElementById('login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        document.getElementById('login-error').textContent = '';
-
-        signInWithEmailAndPassword(auth, email, password).catch((error) => {
-          document.getElementById('login-error').textContent = `Falha no login. Verifique o email e a senha.`;
-          console.error("Erro de login:", error);
-        });
-      });
-
-      logoutBtn.addEventListener('click', () => signOut(auth));
-
-      captacaoForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) return;
-        const submitButton = document.getElementById('submit-button');
-        submitButton.disabled = true;
-        submitButton.textContent = 'Enviando...';
-        const status = captacaoForm.querySelector('input[name="status"]:checked').value;
-        try {
-          const novoContato = {
-            captadorId: currentUser.uid,
-            captadorEmail: currentUser.email,
-            captadorNome: currentUser.displayName,
-            criadoEm: serverTimestamp(),
-            nome: document.getElementById('atleta-nome').value,
-            anoNascimento: parseInt(
-              document.getElementById('atleta-ano-nascimento').value
-            ),
-            estado: document.getElementById('atleta-estado').value,
-            telefone: document.getElementById('atleta-telefone').value.replace(
-              /\D/g,
-              ''
-            ),
-            telefoneResponsavel: document
-              .getElementById('responsavel-telefone')
-              .value.replace(/\D/g, ''),
-            posicao: document.getElementById('atleta-posicao').value,
-            data: document.getElementById('data-contato').value,
-            status: status,
-            confirmado: status === 'Sucesso' ? false : null,
-            previsaoResposta:
-              status === 'Aguardando' ?
-              document.getElementById('previsao-resposta').value :
-              null,
-            dataAvaliacao:
-              status === 'Sucesso' ? document.getElementById('data-avaliacao').value : null,
-            valorPago:
-              status === 'Sucesso' ? parseFloat(document.getElementById('valor-pago').value) || 0 : null,
-            formaPagamento:
-              status === 'Sucesso' ? document.getElementById('forma-pagamento').value : null,
-            nomePagador:
-              status === 'Sucesso' ? document.getElementById('nome-pagador').value : null,
-            clubeDestino:
-              status === 'Sucesso' ? document.getElementById('clube-destino').value : null,
-            motivo:
-              status === 'Falha' ? document.getElementById('motivo-falha').value : '',
-            dataReuniao:
-              status === 'Reunião Agendada' ? document.getElementById('data-reuniao').value : null,
-            horaReuniao:
-              status === 'Reunião Agendada' ? document.getElementById('hora-reuniao').value : null,
-            motivoStandby:
-              status === 'Standby' ? document.getElementById('motivo-standby').value : null,
-            dataLembrete:
-              status === 'Standby' ? document.getElementById('data-lembrete').value : null,
-            // MODIFICAÇÃO: Adiciona o array de histórico com o primeiro registro
-            historicoStatus: [
-              {
-                status: status,
-                dataHora: new Date(),
-                alteradoPor: currentUser.displayName,
-              },
-            ],
-          };
-          await addDoc(collection(db, "captacoes"), novoContato);
-          captacaoForm.reset();
-          document.getElementById('data-contato').valueAsDate = new Date();
-          toggleStatusFields();
-        } catch (error) {
-          console.error("Erro ao salvar registro:", error);
-          alert("Ocorreu um erro ao salvar. Tente novamente.");
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = 'Adicionar Registro';
-        }
-      });
-
-      function escutarContatos() {
-        if (!currentUser) return;
-        contatosList.innerHTML = '<p class="text-gray-400">Carregando...</p>';
-        const q = query(
-          collection(db, "captacoes"),
-          where("captadorId", "==", currentUser.uid),
-          orderBy("criadoEm", "desc")
-        );
-
-        onSnapshot(q, (querySnapshot) => {
-          meusContatos = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          const captsConfirmadas = meusContatos.filter(
-            (c) => c.status === 'Sucesso' && c.confirmado === true
-          ).length;
-          atualizarDisplayNivel(captsConfirmadas);
-          atualizarEstatisticas(meusContatos);
-          processarLembretes(meusContatos);
-          renderizarContatos();
-        }, (error) => {
-          console.error("Erro ao carregar contatos: ", error);
-          contatosList.innerHTML = `<div class="text-center text-red-400 p-4 bg-red-900/50 rounded-lg"><p><strong>Erro ao buscar dados.</strong></p></div>`;
-        });
-      }
-
-      function renderizarContatos() {
-        contatosList.innerHTML = '';
-        const termoBusca = searchInput.value.toLowerCase().trim();
-        let contatosFiltrados =
-          filtroAtual === 'todos' ?
-          meusContatos :
-          meusContatos.filter((c) => c.status === filtroAtual);
-
-        if (termoBusca) {
-          contatosFiltrados = contatosFiltrados.filter((contato) => {
-            const nome = (contato.nome || '').toLowerCase();
-            const ano = String(contato.anoNascimento || '');
-            const telefone = (contato.telefone || '').toLowerCase();
-            const responsavelNome = (contato.nomeResponsavel || '').toLowerCase();
-            const responsavelTelefone = (contato.telefoneResponsavel || '').toLowerCase();
-            return (
-              nome.includes(termoBusca) ||
-              ano.includes(termoBusca) ||
-              telefone.includes(termoBusca) ||
-              responsavelNome.includes(termoBusca) ||
-              responsavelTelefone.includes(termoBusca)
+        // --- Funções de Notificação ---
+        function escutarNotificacoes() {
+            if (!currentUser) return;
+            const q = query(
+                collection(db, "notificacoes"),
+                where("destinatarioId", "==", currentUser.uid),
+                orderBy("timestamp", "desc")
             );
-          });
+
+            onSnapshot(q, (snapshot) => {
+                minhasNotificacoes = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                const naoLidas = minhasNotificacoes.filter((n) => !n.lida).length;
+                notificationBadge.textContent = naoLidas;
+                notificationBadge.classList.toggle('hidden', naoLidas === 0);
+                renderizarListaDeNotificacoes();
+            }, (error) => {
+                console.error("ERRO GRAVE AO BUSCAR NOTIFICAÇÕES: ", error);
+            });
         }
 
-        const contatosAguardando = meusContatos.filter(
-          (c) => c.status === 'Aguardando'
-        ).length;
-        avisoContainer.innerHTML = '';
-        if (contatosAguardando > 0) {
-          const plural = contatosAguardando > 1 ? 's' : '';
-          avisoContainer.innerHTML = `<div class="bg-yellow-900/50 border border-yellow-700 text-yellow-300 px-4 py-3 rounded-lg relative mb-4 fade-in" role="alert"><strong class="font-bold">Atenção!</strong><span class="block sm:inline"> Você tem ${contatosAguardando} contato${plural} aguardando resposta.</span></div>`;
-        }
-
-        if (contatosFiltrados.length === 0) {
-          contatosList.innerHTML = `<p class="text-gray-400 text-center py-4">Nenhum registro encontrado com os filtros aplicados.</p>`;
-          return;
-        }
-
-        contatosFiltrados.forEach((contato) => {
-          const card = document.createElement('div');
-          let statusClass,
-            statusTextClass,
-            confirmedIndicator = '';
-          if (contato.status === 'Sucesso') {
-            if (contato.confirmado === true) {
-              statusClass = 'border-teal-400';
-              statusTextClass = 'text-teal-300';
-              confirmedIndicator = '<span class="text-xs font-bold text-teal-300 ml-2">(Confirmado ✔)</span>';
-            } else {
-              statusClass = 'border-green-500';
-              statusTextClass = 'text-green-400';
+        function renderizarListaDeNotificacoes() {
+            notificationList.innerHTML = '';
+            if (minhasNotificacoes.length === 0) {
+                notificationList.innerHTML =
+                    '<p class="text-gray-500 text-center py-4">Nenhuma notificação ainda.</p>';
+                return;
             }
-          } else if (contato.status === 'Falha') {
-            statusClass = 'border-red-500';
-            statusTextClass = 'text-red-400';
-          } else if (contato.status === 'Reunião Agendada') {
-            statusClass = 'border-cyan-500';
-            statusTextClass = 'text-cyan-400';
-          } else if (contato.status === 'Standby') {
-            statusClass = 'border-indigo-500';
-            statusTextClass = 'text-indigo-400';
-          } else {
-            statusClass = 'border-yellow-500';
-            statusTextClass = 'text-yellow-400';
-          }
 
-          card.className = `bg-gray-700 p-4 rounded-lg shadow-md border-l-4 fade-in ${statusClass}`;
-          let detalhes = '';
-          switch (contato.status) {
-            case 'Sucesso':
-              const valorFormatado = (contato.valorPago || 0).toLocaleString(
-                'pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }
-              );
-              detalhes = `<div class="mt-2 text-sm text-gray-300 space-y-1"><p><strong>Pagador:</strong> ${
-                contato.nomePagador || 'N/A'
-              }</p><p><strong>Pagamento:</strong> ${valorFormatado} via ${
-                contato.formaPagamento || 'N/A'
-              }</p><p><strong>Avaliação:</strong> ${
-                contato.dataAvaliacao ?
-                new Date(contato.dataAvaliacao + 'T00:00:00').toLocaleDateString(
-                  'pt-BR'
-                ) :
-                'N/A'
-              }</p><p><strong>Clube:</strong> ${
-                contato.clubeDestino || 'N/A'
-              }</p></div>`;
-              break;
-            case 'Falha':
-              detalhes = `<p class="text-sm text-gray-400 mt-2"><strong>Motivo:</strong> ${
-                contato.motivo || 'N/A'
-              }</p>`;
-              break;
-            case 'Aguardando':
-              detalhes = `<p class="text-sm text-gray-400 mt-2"><strong>Acompanhamento:</strong> ${
-                contato.previsaoResposta || 'Nenhuma anotação.'
-              }</p>`;
-              break;
-            case 'Reunião Agendada':
-              const dataReuniaoFmt = contato.dataReuniao ?
-                new Date(contato.dataReuniao + 'T00:00:00').toLocaleDateString(
-                  'pt-BR'
-                ) :
-                'N/A';
-              detalhes = `<p class="text-sm text-cyan-300 mt-2"><strong>Reunião:</strong> ${dataReuniaoFmt} às ${
-                contato.horaReuniao || 'N/A'
-              }</p>`;
-              break;
-            case 'Standby':
-              const dataLembreteFmt = contato.dataLembrete ?
-                ` | <strong>Lembrete:</strong> ${new Date(
-                  contato.dataLembrete + 'T00:00:00'
-                ).toLocaleDateString('pt-BR')}` :
-                '';
-              detalhes = `<p class="text-sm text-indigo-300 mt-2"><strong>Anotação:</strong> ${
-                contato.motivoStandby || 'Nenhuma anotação.'
-              }${dataLembreteFmt}</p>`;
-              break;
-          }
+            minhasNotificacoes.forEach((n) => {
+                const item = document.createElement('div');
+                const icon =
+                    n.tipo === 'confirmacao'
+                        ? '<span class="text-xl">✅</span>'
+                        : n.tipo === 'aviso_geral'
+                            ? '<span class="text-xl">📢</span>'
+                            : '<span class="text-xl">🔔</span>';
+                
+                item.className = `p-3 rounded-lg flex items-center gap-3 transition cursor-pointer ${
+                    n.lida ? 'bg-gray-700/50' : 'bg-blue-900/40 border border-blue-700 hover:bg-blue-900/60'
+                }`;
+                item.innerHTML = `
+                    <div class="flex-shrink-0">${icon}</div>
+                    <div class="flex-1">
+                        <p class="text-gray-200 text-sm">${n.mensagem}</p>
+                        <p class="text-xs text-gray-400 mt-1">${
+                            n.timestamp ? formatarDataRelativa(n.timestamp.toDate()) : ''
+                        } - ${n.remetenteNome || 'Sistema'}</p>
+                    </div>
+                `;
+                notificationList.appendChild(item);
+            });
+        }
 
-          // Adiciona o HTML para a mensagem da gestão, se ela existir
-          const gestorMensagemHtml = contato.mensagemGestor ? 
-            `<div class="mt-2 p-2 rounded-md bg-gray-900/50 text-xs italic text-gray-300 border border-gray-700"><strong>Mensagem da Gestão:</strong> ${contato.mensagemGestor}</div>` : 
-            '';
+        async function marcarNotificacoesComoLidas() {
+            const naoLidasIds = minhasNotificacoes
+                .filter((n) => !n.lida)
+                .map((n) => n.id);
+            if (naoLidasIds.length === 0) return;
 
-          // CORREÇÃO: Define a data de contato com base no campo criadoEm ou data
-          const dataContato = contato.criadoEm ? 
-            new Date(contato.criadoEm.seconds * 1000) : 
-            new Date(contato.data + 'T00:00:00');
-          const dataContatoFormatada = dataContato.toLocaleString('pt-BR');
-          
-          let botoesDeAcao = `<button data-id="${contato.id}" class="edit-btn text-xs bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded w-full">Editar</button><button data-id="${contato.id}" class="excluir-btn text-xs bg-gray-600 hover:bg-red-700 text-white py-1 px-3 rounded w-full">Excluir</button>`;
-          if (contato.status === 'Falha' || contato.status === 'Standby') {
-            botoesDeAcao =
-              `<button data-id="${contato.id}" class="rediscar-btn text-xs bg-orange-500 hover:bg-orange-400 text-white py-1 px-3 rounded w-full">Rediscar</button>` +
-              botoesDeAcao;
-          }
+            const promessasDeUpdate = naoLidasIds.map((id) =>
+                updateDoc(doc(db, "notificacoes", id), { lida: true })
+            );
 
-          card.innerHTML = `
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="font-bold text-lg">${
-                  contato.nome
-                } (Nasc. ${contato.anoNascimento})</p>
-                <p class="text-xs text-gray-400">${
-                  contato.posicao
-                } | ${contato.estado} | Tel: ${formatarTelefone(contato.telefone)}</p>
-                <p class="text-xs text-gray-400">
-                  Responsável: ${contato.nomeResponsavel || 'N/A'} | Tel.: ${formatarTelefone(contato.telefoneResponsavel)}
-                </p>
-                <p class="text-sm text-gray-300 mt-2"><strong>Contato em:</strong> ${dataContatoFormatada}</p>
-                ${gestorMensagemHtml}
-                ${detalhes}
-              </div>
-              <div class="flex flex-col items-end space-y-2 flex-shrink-0 ml-4">
-                <span class="text-sm font-semibold ${statusTextClass}">${
-                  contato.status
-                }${confirmedIndicator}</span>
-                ${botoesDeAcao}
-              </div>
-            </div>`;
-          contatosList.appendChild(card);
-        });
-      }
-
-      filterContainer.addEventListener('click', (e) => {
-        const target = e.target.closest('.filter-btn');
-        if (!target) return;
-        filtroAtual = target.dataset.filter;
-        document.querySelectorAll('.filter-btn').forEach((btn) => {
-          btn.classList.remove('bg-orange-600');
-          btn.classList.add('bg-gray-600', 'hover:bg-gray-500');
-        });
-        target.classList.add('bg-orange-600');
-        target.classList.remove('bg-gray-600', 'hover:bg-gray-500');
-        renderizarContatos();
-      });
-
-      searchInput.addEventListener('input', renderizarContatos);
-
-      contatosList.addEventListener('click', async (e) => {
-        const button = e.target.closest('button');
-        if (!button) return;
-        const docId = button.getAttribute('data-id');
-        if (!docId) return;
-
-        if (button.classList.contains('excluir-btn')) {
-          if (confirm('Tem certeza que deseja excluir este registro permanentemente?')) {
-            await deleteDoc(doc(db, "captacoes", docId));
-          }
-        } else if (button.classList.contains('edit-btn')) {
-          const contatoParaEditar = meusContatos.find((c) => c.id === docId);
-          if (contatoParaEditar) abrirModalDeEdicao(contatoParaEditar);
-        } else if (button.classList.contains('rediscar-btn')) {
-          if (confirm('Deseja reabrir este contato como "Aguardando" para uma nova tentativa?')) {
             try {
-              const contato = meusContatos.find((c) => c.id === docId);
-              const novoRegistroHistorico = {
-                  status: 'Aguardando',
-                  dataHora: new Date(),
-                  alteradoPor: currentUser.displayName,
-                  mensagem: 'Contato reaberto para nova tentativa (Rediscar).'
-              };
-              
-              await updateDoc(doc(db, "captacoes", docId), {
-                status: 'Aguardando',
-                motivo: null,
-                motivoStandby: null,
-                previsaoResposta: 'Contato reaberto para nova tentativa.',
-                historicoStatus: arrayUnion(novoRegistroHistorico)
-              });
+                await Promise.all(promessasDeUpdate);
             } catch (error) {
-              console.error("Erro ao tentar rediscar:", error);
-              alert("Não foi possível atualizar o contato. Tente novamente.");
+                console.error("Erro ao marcar notificações como lidas: ", error);
             }
-          }
-        }
-      });
-
-      function abrirModalDeEdicao(contato) {
-        contatoOriginal = { ...contato
-        };
-
-        editForm.elements['edit-doc-id'].value = contato.id;
-        editForm.elements['edit-atleta-nome'].value = contato.nome;
-        editForm.elements['edit-atleta-ano-nascimento'].value = contato.anoNascimento;
-        editForm.elements['edit-atleta-estado'].value = contato.estado;
-        editForm.elements['edit-atleta-telefone'].value = formatarTelefone(
-          contato.telefone
-        );
-        editForm.elements['edit-responsavel-telefone'].value = formatarTelefone(
-          contato.telefoneResponsavel
-        );
-        editForm.elements['edit-status'].value = contato.status;
-        editForm.elements['edit-previsao-resposta'].value = contato.previsaoResposta || '';
-        editForm.elements['edit-data-avaliacao'].value = contato.dataAvaliacao || '';
-        editForm.elements['edit-nome-pagador'].value = contato.nomePagador || '';
-        editForm.elements['edit-forma-pagamento'].value = contato.formaPagamento || 'Pix';
-        editForm.elements['edit-valor-pago'].value = contato.valorPago || '';
-        editForm.elements['edit-clube-destino'].value = contato.clubeDestino || '';
-        editForm.elements['edit-motivo-falha'].value = contato.motivo || '';
-        editForm.elements['edit-data-reuniao'].value = contato.dataReuniao || '';
-        editForm.elements['edit-hora-reuniao'].value = contato.horaReuniao || '';
-        editForm.elements['edit-motivo-standby'].value = contato.motivoStandby || '';
-        editForm.elements['edit-data-lembrete'].value = contato.dataLembrete || '';
-
-        toggleEditCampos();
-        editModal.style.display = 'flex';
-      }
-
-      document
-        .getElementById('cancel-edit-btn')
-        .addEventListener('click', () => (editModal.style.display = 'none'));
-      document
-        .getElementById('edit-status')
-        .addEventListener('change', toggleEditCampos);
-
-      function toggleEditCampos() {
-        const status = document.getElementById('edit-status').value;
-        document.getElementById('edit-campos-aguardando').style.display =
-          status === 'Aguardando' ? 'block' : 'none';
-        document.getElementById('edit-campos-sucesso').style.display =
-          status === 'Sucesso' ? 'block' : 'none';
-        document.getElementById('edit-campos-falha').style.display =
-          status === 'Falha' ? 'block' : 'none';
-        document.getElementById('edit-campos-reuniao').style.display =
-          status === 'Reunião Agendada' ? 'block' : 'none';
-        document.getElementById('edit-campos-standby').style.display =
-          status === 'Standby' ? 'block' : 'none';
-      }
-
-      editForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = editForm.elements['edit-doc-id'].value;
-        const statusNovo = editForm.elements['edit-status'].value;
-
-        const dadosAtualizados = {
-          nome: editForm.elements['edit-atleta-nome'].value,
-          anoNascimento: parseInt(
-            editForm.elements['edit-atleta-ano-nascimento'].value
-          ),
-          estado: editForm.elements['edit-atleta-estado'].value,
-          telefone: editForm.elements['edit-atleta-telefone'].value.replace(
-            /\D/g,
-            ''
-          ),
-          telefoneResponsavel: editForm.elements[
-            'edit-responsavel-telefone'
-          ].value.replace(/\D/g, ''),
-          status: statusNovo,
-          previsaoResposta:
-            statusNovo === 'Aguardando' ?
-            editForm.elements['edit-previsao-resposta'].value :
-            null,
-          dataAvaliacao:
-            statusNovo === 'Sucesso' ? editForm.elements['edit-data-avaliacao'].value : null,
-          nomePagador:
-            statusNovo === 'Sucesso' ? editForm.elements['edit-nome-pagador'].value : null,
-          formaPagamento:
-            statusNovo === 'Sucesso' ? editForm.elements['edit-forma-pagamento'].value : null,
-          valorPago:
-            statusNovo === 'Sucesso' ? parseFloat(editForm.elements['edit-valor-pago'].value) || 0 : null,
-          clubeDestino:
-            statusNovo === 'Sucesso' ? editForm.elements['edit-clube-destino'].value : null,
-          motivo:
-            statusNovo === 'Falha' ? editForm.elements['edit-motivo-falha'].value : null,
-          dataReuniao:
-            statusNovo === 'Reunião Agendada' ? editForm.elements['edit-data-reuniao'].value : null,
-          horaReuniao:
-            statusNovo === 'Reuniao Agendada' ? editForm.elements['edit-hora-reuniao'].value : null,
-          motivoStandby:
-            statusNovo === 'Standby' ? editForm.elements['edit-motivo-standby'].value : null,
-          dataLembrete:
-            statusNovo === 'Standby' ? editForm.elements['edit-data-lembrete'].value : null,
-        };
-
-        if (statusNovo !== contatoOriginal.status) {
-          const novoRegistroHistorico = {
-            status: statusNovo,
-            dataHora: new Date(),
-            alteradoPor: currentUser.displayName,
-          };
-          await updateDoc(doc(db, "captacoes", id), {
-            ...dadosAtualizados,
-            historicoStatus: arrayUnion(novoRegistroHistorico),
-          });
-        } else {
-          await updateDoc(doc(db, "captacoes", id), dadosAtualizados);
         }
 
-        editModal.style.display = 'none';
-      });
+        function formatarDataRelativa(data) {
+            const agora = new Date();
+            const diffSegundos = Math.round((agora - data) / 1000);
+            const diffMinutos = Math.round(diffSegundos / 60);
+            const diffHoras = Math.round(diffMinutos / 60);
+            const diffDias = Math.round(diffHoras / 24);
 
-      document
-        .querySelectorAll('input[name="status"]')
-        .forEach((radio) => radio.addEventListener('change', toggleStatusFields));
+            if (diffSegundos < 60) return `agora mesmo`;
+            if (diffMinutos < 60) return `há ${diffMinutos} min`;
+            if (diffHoras < 24) return `há ${diffHoras}h`;
+            if (diffDias === 1) return `ontem`;
+            return data.toLocaleDateString('pt-BR');
+        }
 
-      function toggleStatusFields() {
-        const status = document.querySelector('input[name="status"]:checked').value;
-        document.getElementById('campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
-        document.getElementById('campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
-        document.getElementById('campos-falha').classList.toggle('hidden', status !== 'Falha');
-        document.getElementById('campos-reuniao').classList.toggle('hidden', status !== 'Reunião Agendada');
-        document.getElementById('campos-standby').classList.toggle('hidden', status !== 'Standby');
-      }
+        notificationBell.addEventListener('click', () => {
+            notificationModal.style.display = 'flex';
+            marcarNotificacoesComoLidas();
+        });
 
-      document.getElementById('data-contato').valueAsDate = new Date();
-      toggleStatusFields();
+        notificationCloseBtn.addEventListener('click', () => {
+            notificationModal.style.display = 'none';
+        });
+
+        // --- Funções para Lembretes ---
+        function processarLembretes(contatos) {
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+
+            lembretesAtivos = contatos.filter((c) => {
+                if (c.status === 'Standby' && c.dataLembrete) {
+                    const dataLembrete = new Date(c.dataLembrete + 'T00:00:00');
+                    return dataLembrete <= hoje;
+                }
+                if (c.status === 'Reunião Agendada' && c.dataReuniao) {
+                    const dataReuniao = new Date(c.dataReuniao + 'T00:00:00');
+                    return dataReuniao.toDateString() === hoje.toDateString();
+                }
+                return false;
+            });
+
+            lembreteBadge.textContent = lembretesAtivos.length;
+            lembreteBadge.classList.toggle('hidden', lembretesAtivos.length === 0);
+            renderizarLembretes();
+        }
+
+        function renderizarLembretes() {
+            lembreteList.innerHTML = '';
+            lembretesAtivos.sort((a, b) => {
+                const dataA = a.dataLembrete || a.dataReuniao;
+                const dataB = b.dataLembrete || b.dataReuniao;
+                return new Date(dataA) - new Date(dataB);
+            });
+
+            if (lembretesAtivos.length === 0) {
+                lembreteList.innerHTML =
+                    '<p class="text-gray-500 text-center py-4">Nenhum lembrete ativo no momento.</p>';
+                return;
+            }
+
+            lembretesAtivos.forEach((lembrete) => {
+                const isReuniao = lembrete.status === 'Reunião Agendada';
+                const item = document.createElement('div');
+                
+                const dataLembreteFmt = isReuniao
+                    ? new Date(lembrete.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR')
+                    : new Date(lembrete.dataLembrete + 'T00:00:00').toLocaleDateString('pt-BR');
+
+                const titulo = isReuniao ? 'Reunião Hoje' : 'Revisitar Contato (Standby)';
+                const corBorda = isReuniao ? 'border-cyan-500' : 'border-blue-500';
+                const anotacao = isReuniao 
+                    ? `Hora: ${lembrete.horaReuniao || 'N/A'}`
+                    : `Anotação: ${lembrete.motivoStandby || 'Nenhuma'}`;
+
+                item.className = `p-4 rounded-lg bg-gray-700/70 border-l-4 ${corBorda} transition`;
+                item.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold text-gray-100">${lembrete.nome}</p>
+                        <p class="text-xs font-semibold ${isReuniao ? 'text-cyan-300' : 'text-blue-300'}">${titulo}</p>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-1"><strong>Data:</strong> ${dataLembreteFmt}</p>
+                    <p class="text-sm text-gray-400 mt-2 bg-gray-900/50 p-2 rounded">
+                        <strong>${isReuniao ? 'Detalhes' : 'Lembrete'}:</strong> ${anotacao}
+                    </p>
+                `;
+                lembreteList.appendChild(item);
+            });
+        }
+
+        lembreteBell.addEventListener('click', () => (lembreteModal.style.display = 'flex'));
+        lembreteCloseBtn.addEventListener('click', () => (lembreteModal.style.display = 'none'));
+
+        // --- Lógica de Autenticação e Carregamento ---
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                userDisplay.textContent = `Captador: ${user.displayName || user.email}`;
+                loginContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                escutarContatos();
+                escutarNotificacoes();
+            } else {
+                loginContainer.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+            }
+        });
+
+        function formatarTelefone(numero) {
+            if (!numero || typeof numero !== 'string') return 'N/A';
+            const numeroLimpo = numero.replace(/\D/g, '');
+            if (numeroLimpo.length === 11) {
+                return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(
+                    2,
+                    7
+                )}-${numeroLimpo.substring(7)}`;
+            }
+            if (numeroLimpo.length === 10) {
+                return `(${numeroLimpo.substring(0, 2)}) ${numeroLimpo.substring(
+                    2,
+                    6
+                )}-${numeroLimpo.substring(6)}`;
+            }
+            return numero;
+        }
+
+        const aplicarMascaraTelefone = (event) => {
+            let input = event.target;
+            let value = input.value.replace(/\D/g, '');
+            value = value.substring(0, 11);
+            if (value.length > 2 && value.length <= 6) {
+                value = `(${value.substring(0, 2)}) ${value.substring(2)}`;
+            } else if (value.length > 6) {
+                value = `(${value.substring(0, 2)}) ${value.substring(
+                    2,
+                    7
+                )}-${value.substring(7)}`;
+            } else if (value.length > 0) {
+                value = `(${value}`;
+            }
+            input.value = value;
+        };
+
+        // Aplica a classe form-field para padronizar o estilo visual
+        document.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="password"], input[type="date"], input[type="time"], textarea, select')
+            .forEach(el => {
+                if (!el.classList.contains('form-field') && el.id !== 'search-input') {
+                    el.classList.add('form-field');
+                }
+            });
+
+
+        document
+            .getElementById('atleta-telefone')
+            .addEventListener('input', aplicarMascaraTelefone);
+        document
+            .getElementById('responsavel-telefone')
+            .addEventListener('input', aplicarMascaraTelefone);
+        document
+            .getElementById('edit-atleta-telefone')
+            .addEventListener('input', aplicarMascaraTelefone);
+        document
+            .getElementById('edit-responsavel-telefone')
+            .addEventListener('input', aplicarMascaraTelefone);
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            document.getElementById('login-error').textContent = '';
+            signInWithEmailAndPassword(auth, email, password).catch((error) => {
+                document.getElementById('login-error').textContent = `Falha no login. Verifique o email e a senha.`;
+                console.error("Erro de login:", error);
+            });
+        });
+
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        captacaoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            const submitButton = document.getElementById('submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+            const status = captacaoForm.querySelector('input[name="status"]:checked').value;
+            try {
+                const novoContato = {
+                    captadorId: currentUser.uid,
+                    captadorEmail: currentUser.email,
+                    captadorNome: currentUser.displayName,
+                    criadoEm: serverTimestamp(),
+                    nome: document.getElementById('atleta-nome').value,
+                    anoNascimento: parseInt(
+                        document.getElementById('atleta-ano-nascimento').value
+                    ),
+                    estado: document.getElementById('atleta-estado').value,
+                    telefone: document.getElementById('atleta-telefone').value.replace(
+                        /\D/g,
+                        ''
+                    ),
+                    nomeResponsavel: document.getElementById('responsavel-nome').value,
+                    telefoneResponsavel: document
+                        .getElementById('responsavel-telefone')
+                        .value.replace(/\D/g, ''),
+                    posicao: document.getElementById('atleta-posicao').value,
+                    data: document.getElementById('data-contato').value,
+                    status: status,
+                    confirmado: status === 'Sucesso' ? false : null,
+                    previsaoResposta:
+                        status === 'Aguardando'
+                            ? document.getElementById('previsao-resposta').value
+                            : null,
+                    dataAvaliacao:
+                        status === 'Sucesso'
+                            ? document.getElementById('data-avaliacao').value
+                            : null,
+                    valorPago:
+                        status === 'Sucesso'
+                            ? parseFloat(document.getElementById('valor-pago').value) || 0
+                            : null,
+                    formaPagamento:
+                        status === 'Sucesso'
+                            ? document.getElementById('forma-pagamento').value
+                            : null,
+                    nomePagador:
+                        status === 'Sucesso'
+                            ? document.getElementById('nome-pagador').value
+                            : null,
+                    clubeDestino:
+                        status === 'Sucesso'
+                            ? document.getElementById('clube-destino').value
+                            : null,
+                    motivo:
+                        status === 'Falha'
+                            ? document.getElementById('motivo-falha').value
+                            : '',
+                    dataReuniao:
+                        status === 'Reunião Agendada'
+                            ? document.getElementById('data-reuniao').value
+                            : null,
+                    horaReuniao:
+                        status === 'Reunião Agendada'
+                            ? document.getElementById('hora-reuniao').value
+                            : null,
+                    motivoStandby:
+                        status === 'Standby'
+                            ? document.getElementById('motivo-standby').value
+                            : null,
+                    dataLembrete:
+                        status === 'Standby'
+                            ? document.getElementById('data-lembrete').value
+                            : null,
+                    historicoStatus: [
+                        {
+                            status: status,
+                            dataHora: new Date(),
+                            alteradoPor: currentUser.displayName,
+                        },
+                    ],
+                };
+
+                await addDoc(collection(db, "captacoes"), novoContato);
+                captacaoForm.reset();
+                document.getElementById('data-contato').valueAsDate = new Date();
+                toggleStatusFields();
+                gestorMessageContainer.style.display = 'none';
+                gestorMessage.textContent = 'Nenhuma mensagem.';
+                
+            } catch (error) {
+                console.error("Erro ao salvar registro:", error);
+                alert("Ocorreu um erro ao salvar. Tente novamente.");
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Adicionar Registro';
+            }
+        });
+
+        // Correção de filtro mantida para Leads Reatribuídos
+        function escutarContatos() {
+            if (!currentUser) return;
+            contatosList.innerHTML = '<p class="text-gray-400">Carregando...</p>';
+            
+            const qByUid = where("captadorId", "==", currentUser.uid);
+            const qByEmail = where("captadorEmail", "==", currentUser.email);
+
+            const q = query(
+                collection(db, "captacoes"),
+                or(qByUid, qByEmail),
+                orderBy("criadoEm", "desc")
+            );
+
+            onSnapshot(
+                q,
+                (querySnapshot) => {
+                    meusContatos = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+
+                    const captsConfirmadas = meusContatos.filter(
+                        (c) => c.status === 'Sucesso' && c.confirmado === true
+                    ).length;
+                    atualizarDisplayNivel(captsConfirmadas);
+                    atualizarEstatisticas(meusContatos);
+                    processarLembretes(meusContatos);
+                    renderizarContatos();
+                },
+                (error) => {
+                    console.error("Erro ao carregar contatos: ", error);
+                    contatosList.innerHTML = `<div class="text-center text-red-400 p-4 bg-red-900/50 rounded-lg"><p><strong>Erro ao buscar dados.</strong></p></div>`;
+                }
+            );
+        }
+
+        function renderizarContatos() {
+            contatosList.innerHTML = '';
+            const termoBusca = searchInput.value.toLowerCase().trim();
+            let contatosFiltrados =
+                filtroAtual === 'todos'
+                    ? meusContatos
+                    : meusContatos.filter((c) => c.status === filtroAtual);
+
+            if (termoBusca) {
+                contatosFiltrados = contatosFiltrados.filter((contato) => {
+                    const nome = (contato.nome || '').toLowerCase();
+                    const ano = String(contato.anoNascimento || '');
+                    const telefone = (contato.telefone || '').toLowerCase();
+                    const responsavelNome = (contato.nomeResponsavel || '').toLowerCase();
+                    const responsavelTelefone = (
+                        contato.telefoneResponsavel || ''
+                    ).toLowerCase();
+                    return (
+                        nome.includes(termoBusca) ||
+                        ano.includes(termoBusca) ||
+                        telefone.includes(termoBusca) ||
+                        responsavelNome.includes(termoBusca) ||
+                        responsavelTelefone.includes(termoBusca)
+                    );
+                });
+            }
+
+            const contatosAguardando = meusContatos.filter(
+                (c) => c.status === 'Aguardando'
+            ).length;
+            avisoContainer.innerHTML = '';
+            if (contatosAguardando > 0) {
+                const plural = contatosAguardando > 1 ? 's' : '';
+                // Estilo do aviso conforme a imagem
+                avisoContainer.innerHTML = `<div class="bg-yellow-900/40 border border-yellow-600 text-yellow-300 px-4 py-3 rounded-lg relative fade-in" role="alert"><strong class="font-bold">Atenção!</strong><span class="block sm:inline"> Você tem ${contatosAguardando} contato${plural} aguardando resposta.</span></div>`;
+            }
+
+            if (contatosFiltrados.length === 0) {
+                contatosList.innerHTML = `<p class="text-gray-400 text-center py-4">Nenhum registro encontrado com os filtros aplicados.</p>`;
+                return;
+            }
+
+            contatosFiltrados.forEach((contato) => {
+                const card = document.createElement('div');
+                let statusClass,
+                    statusTextClass,
+                    confirmedIndicator = '';
+
+                if (contato.status === 'Sucesso') {
+                    if (contato.confirmado === true) {
+                        statusClass = 'border-teal-400';
+                        statusTextClass = 'text-teal-300';
+                        confirmedIndicator =
+                            '<span class="text-xs font-bold text-teal-300 ml-2">(Confirmado ✔)</span>';
+                    } else {
+                        statusClass = 'border-green-500';
+                        statusTextClass = 'text-green-400';
+                    }
+                } else if (contato.status === 'Falha') {
+                    statusClass = 'border-red-500';
+                    statusTextClass = 'text-red-400';
+                } else if (contato.status === 'Reunião Agendada') {
+                    statusClass = 'border-cyan-500';
+                    statusTextClass = 'text-cyan-400';
+                } else if (contato.status === 'Standby') {
+                    statusClass = 'border-indigo-500';
+                    statusTextClass = 'text-indigo-400';
+                } else {
+                    statusClass = 'border-yellow-500';
+                    statusTextClass = 'text-yellow-400';
+                }
+
+                // Estilo do Card Principal conforme a imagem
+                card.className = `bg-gray-700/70 p-4 rounded-lg shadow-lg fade-in border-l-4 ${statusClass} flex justify-between gap-4`;
+
+                let detalhes = '';
+                let acompanhamento = '';
+                const dataContato = contato.criadoEm
+                    ? new Date(contato.criadoEm.seconds * 1000)
+                    : new Date(contato.data + 'T00:00:00');
+                const dataContatoFormatada = dataContato.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+
+                switch (contato.status) {
+                    case 'Sucesso':
+                        const valorFormatado = (contato.valorPago || 0).toLocaleString(
+                            'pt-BR', { style: 'currency', currency: 'BRL', }
+                        );
+                        detalhes = `<p class="text-sm text-gray-400 mt-1">Avaliação: ${contato.dataAvaliacao ? new Date(contato.dataAvaliacao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'} | Valor: ${valorFormatado}</p>`;
+                        break;
+                    case 'Falha':
+                        acompanhamento = `<p class="text-sm text-gray-400 mt-2">Motivo: ${contato.motivo || 'N/A'}</p>`;
+                        break;
+                    case 'Aguardando':
+                        acompanhamento = `<p class="text-sm text-gray-400 mt-2">Acompanhamento: ${contato.previsaoResposta || 'Nenhuma anotação.'}</p>`;
+                        break;
+                    case 'Reunião Agendada':
+                        const dataReuniaoFmt = contato.dataReuniao ? new Date(contato.dataReuniao + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
+                        acompanhamento = `<p class="text-sm text-cyan-300 mt-2">Reunião: ${dataReuniaoFmt} às ${contato.horaReuniao || 'N/A'}</p>`;
+                        break;
+                    case 'Standby':
+                        acompanhamento = `<p class="text-sm text-indigo-300 mt-2">Anotação: ${contato.motivoStandby || 'Nenhuma anotação.'}</p>`;
+                        break;
+                }
+
+                const gestorMensagemHtml = contato.mensagemGestor
+                    ? `<div class="mt-2 p-2 rounded-md bg-gray-900/50 text-xs italic text-orange-300 border border-gray-700"><strong>Mensagem da Gestão:</strong> ${contato.mensagemGestor}</div>`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-lg text-gray-100">${contato.nome} <span class="font-normal text-gray-400">(Nasc. ${contato.anoNascimento})</span></p>
+                        <p class="text-xs text-gray-400 mt-1">
+                            ${contato.posicao} | ${contato.estado} | Tel: ${formatarTelefone(contato.telefone)}
+                        </p>
+                        <p class="text-xs text-gray-400">
+                            Responsável: ${contato.nomeResponsavel || 'N/A'} | Tel.: ${formatarTelefone(contato.telefoneResponsavel)}
+                        </p>
+                        <p class="text-sm text-gray-300 mt-3">Contato em: ${dataContatoFormatada}</p>
+                        ${gestorMensagemHtml}
+                        ${acompanhamento}
+                    </div>
+                    <div class="flex flex-col items-end flex-shrink-0 space-y-2 ml-4">
+                        <span class="text-sm font-semibold ${statusTextClass} whitespace-nowrap">${contato.status}${confirmedIndicator}</span>
+                        <button data-id="${contato.id}" class="edit-btn text-sm bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg w-full transition shadow-md">Editar</button>
+                        <button data-id="${contato.id}" class="excluir-btn text-sm bg-gray-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg w-full transition">Excluir</button>
+                        ${(contato.status === 'Falha' || contato.status === 'Standby') ? 
+                            `<button data-id="${contato.id}" class="rediscar-btn text-sm bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded-lg w-full transition shadow-md">Rediscar</button>` : ''}
+                    </div>
+                `;
+                contatosList.appendChild(card);
+            });
+        }
+
+        filterContainer.addEventListener('click', (e) => {
+            const target = e.target.closest('.filter-btn');
+            if (!target) return;
+
+            filtroAtual = target.dataset.filter;
+            document.querySelectorAll('.filter-btn').forEach((btn) => {
+                btn.classList.remove('bg-orange-600');
+                btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+            });
+            target.classList.add('bg-orange-600');
+            target.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+
+            renderizarContatos();
+        });
+
+        searchInput.addEventListener('input', renderizarContatos);
+
+        contatosList.addEventListener('click', async (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            const docId = button.getAttribute('data-id');
+            if (!docId) return;
+
+            if (button.classList.contains('excluir-btn')) {
+                if (
+                    confirm('Tem certeza que deseja excluir este registro permanentemente?')
+                ) {
+                    await deleteDoc(doc(db, "captacoes", docId));
+                }
+            } else if (button.classList.contains('edit-btn')) {
+                const contatoParaEditar = meusContatos.find((c) => c.id === docId);
+                if (contatoParaEditar) abrirModalDeEdicao(contatoParaEditar);
+            } else if (button.classList.contains('rediscar-btn')) {
+                if (
+                    confirm(
+                        'Deseja reabrir este contato como "Aguardando" para uma nova tentativa?'
+                    )
+                ) {
+                    try {
+                        const contato = meusContatos.find((c) => c.id === docId);
+                        const novoRegistroHistorico = {
+                            status: 'Aguardando',
+                            dataHora: new Date(),
+                            alteradoPor: currentUser.displayName,
+                            mensagem: 'Contato reaberto para nova tentativa (Rediscar).',
+                        };
+                        await updateDoc(doc(db, "captacoes", docId), {
+                            status: 'Aguardando',
+                            motivo: null,
+                            motivoStandby: null,
+                            previsaoResposta: 'Contato reaberto para nova tentativa.',
+                            historicoStatus: arrayUnion(novoRegistroHistorico),
+                        });
+                    } catch (error) {
+                        console.error("Erro ao tentar rediscar:", error);
+                        alert("Não foi possível atualizar o contato. Tente novamente.");
+                    }
+                }
+            }
+        });
+
+        function abrirModalDeEdicao(contato) {
+            contatoOriginal = { ...contato };
+            editForm.elements['edit-doc-id'].value = contato.id;
+            editForm.elements['edit-atleta-nome'].value = contato.nome;
+            editForm.elements['edit-atleta-ano-nascimento'].value = contato.anoNascimento;
+            editForm.elements['edit-atleta-estado'].value = contato.estado;
+            editForm.elements['edit-atleta-telefone'].value = formatarTelefone(
+                contato.telefone
+            );
+            editForm.elements['edit-responsavel-nome'].value = contato.nomeResponsavel || '';
+            editForm.elements['edit-responsavel-telefone'].value = formatarTelefone(
+                contato.telefoneResponsavel
+            );
+            editForm.elements['edit-status'].value = contato.status;
+            editForm.elements['edit-previsao-resposta'].value =
+                contato.previsaoResposta || '';
+            editForm.elements['edit-data-avaliacao'].value = contato.dataAvaliacao || '';
+            editForm.elements['edit-nome-pagador'].value = contato.nomePagador || '';
+            editForm.elements['edit-forma-pagamento'].value =
+                contato.formaPagamento || 'Pix';
+            editForm.elements['edit-valor-pago'].value = contato.valorPago || '';
+            editForm.elements['edit-clube-destino'].value = contato.clubeDestino || '';
+            editForm.elements['edit-motivo-falha'].value = contato.motivo || '';
+            editForm.elements['edit-data-reuniao'].value = contato.dataReuniao || '';
+            editForm.elements['edit-hora-reuniao'].value = contato.horaReuniao || '';
+            editForm.elements['edit-motivo-standby'].value = contato.motivoStandby || '';
+            editForm.elements['edit-data-lembrete'].value = contato.dataLembrete || '';
+
+            // Exibir a mensagem do Gestor no Modal de Edição
+            const msgGestor = contato.mensagemGestor;
+            if (msgGestor) {
+                document.getElementById('edit-gestor-message-container').style.display = 'block';
+                document.getElementById('edit-gestor-message').textContent = msgGestor;
+            } else {
+                document.getElementById('edit-gestor-message-container').style.display = 'none';
+            }
+
+            toggleEditCampos();
+            editModal.style.display = 'flex';
+        }
+
+        document
+            .getElementById('cancel-edit-btn')
+            .addEventListener('click', () => (editModal.style.display = 'none'));
+
+        document
+            .getElementById('edit-status')
+            .addEventListener('change', toggleEditCampos);
+
+        function toggleEditCampos() {
+            const status = document.getElementById('edit-status').value;
+            // Corrigido para alternar corretamente entre os campos no modal de edição
+            document.getElementById('edit-campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
+            document.getElementById('edit-campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
+            document.getElementById('edit-campos-falha').classList.toggle('hidden', status !== 'Falha');
+            document.getElementById('edit-campos-reuniao').classList.toggle('hidden', status !== 'Reunião Agendada');
+            document.getElementById('edit-campos-standby').classList.toggle('hidden', status !== 'Standby');
+        }
+
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = editForm.elements['edit-doc-id'].value;
+            const statusNovo = editForm.elements['edit-status'].value;
+
+            const dadosAtualizados = {
+                nome: editForm.elements['edit-atleta-nome'].value,
+                anoNascimento: parseInt(
+                    editForm.elements['edit-atleta-ano-nascimento'].value
+                ),
+                estado: editForm.elements['edit-atleta-estado'].value,
+                telefone: editForm.elements['edit-atleta-telefone'].value.replace(
+                    /\D/g,
+                    ''
+                ),
+                nomeResponsavel: editForm.elements['edit-responsavel-nome'].value,
+                telefoneResponsavel: editForm.elements[
+                    'edit-responsavel-telefone'
+                ].value.replace(/\D/g, ''),
+                status: statusNovo,
+                previsaoResposta:
+                    statusNovo === 'Aguardando'
+                        ? editForm.elements['edit-previsao-resposta'].value
+                        : null,
+                dataAvaliacao:
+                    statusNovo === 'Sucesso'
+                        ? editForm.elements['edit-data-avaliacao'].value
+                        : null,
+                nomePagador:
+                    statusNovo === 'Sucesso'
+                        ? editForm.elements['edit-nome-pagador'].value
+                        : null,
+                formaPagamento:
+                    statusNovo === 'Sucesso'
+                        ? editForm.elements['edit-forma-pagamento'].value
+                        : null,
+                valorPago:
+                    statusNovo === 'Sucesso'
+                        ? parseFloat(editForm.elements['edit-valor-pago'].value) || 0
+                        : null,
+                clubeDestino:
+                    statusNovo === 'Sucesso'
+                        ? editForm.elements['edit-clube-destino'].value
+                        : null,
+                motivo:
+                    statusNovo === 'Falha'
+                        ? editForm.elements['edit-motivo-falha'].value
+                        : null,
+                dataReuniao:
+                    statusNovo === 'Reunião Agendada'
+                        ? editForm.elements['edit-data-reuniao'].value
+                        : null,
+                horaReuniao:
+                    statusNovo === 'Reunião Agendada'
+                        ? editForm.elements['edit-hora-reuniao'].value
+                        : null,
+                motivoStandby:
+                    statusNovo === 'Standby'
+                        ? editForm.elements['edit-motivo-standby'].value
+                        : null,
+                dataLembrete:
+                    statusNovo === 'Standby'
+                        ? editForm.elements['edit-data-lembrete'].value
+                        : null,
+            };
+
+            if (statusNovo !== contatoOriginal.status) {
+                const novoRegistroHistorico = {
+                    status: statusNovo,
+                    dataHora: new Date(),
+                    alteradoPor: currentUser.displayName,
+                };
+                await updateDoc(doc(db, "captacoes", id), {
+                    ...dadosAtualizados,
+                    historicoStatus: arrayUnion(novoRegistroHistorico),
+                });
+            } else {
+                await updateDoc(doc(db, "captacoes", id), dadosAtualizados);
+            }
+            editModal.style.display = 'none';
+        });
+
+        document
+            .querySelectorAll('input[name="status"]')
+            .forEach((radio) => radio.addEventListener('change', toggleStatusFields));
+
+        function toggleStatusFields() {
+            const status = document.querySelector('input[name="status"]:checked').value;
+            // Oculta/mostra as seções de campos adicionais no formulário de NOVO contato
+            document.getElementById('campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
+            document.getElementById('campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
+            document.getElementById('campos-falha').classList.toggle('hidden', status !== 'Falha');
+            document.getElementById('campos-reuniao').classList.toggle('hidden', status !== 'Reunião Agendada');
+            document.getElementById('campos-standby').classList.toggle('hidden', status !== 'Standby');
+
+            // Oculta a mensagem do gestor no formulário principal ao mudar o status 
+            // (ela só é relevante para leads reatribuídos que estão em "Aguardando")
+            if (status !== 'Aguardando' && gestorMessageContainer) {
+                 gestorMessageContainer.style.display = 'none';
+            }
+        }
+
+        document.getElementById('data-contato').valueAsDate = new Date();
+        toggleStatusFields();
     </script>
-  </body>
+</body>
 </html>
