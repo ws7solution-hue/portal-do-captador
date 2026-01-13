@@ -894,12 +894,17 @@
                     const responsavelTelefone = (
                         contato.telefoneResponsavel || ''
                     ).toLowerCase();
+                    // Nova linha adicionada:
+                    const posicao = (contato.posicao || '').toLowerCase();
+
                     return (
                         nome.includes(termoBusca) ||
                         ano.includes(termoBusca) ||
                         telefone.includes(termoBusca) ||
                         responsavelNome.includes(termoBusca) ||
-                        responsavelTelefone.includes(termoBusca)
+                        responsavelTelefone.includes(termoBusca) ||
+                        // Nova condição adicionada:
+                        posicao.includes(termoBusca)
                     );
                 });
             }
