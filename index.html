@@ -118,6 +118,9 @@
                 >
                     Entrar
                 </button>
+                <div class="text-center mt-4">
+                    <button type="button" onclick="recuperarSenha()" class="text-sm text-orange-400 hover:underline">Esqueci minha senha</button>
+                </div>
                 <p id="login-error" class="text-red-400 text-sm text-center pt-2"></p>
             </form>
         </div>
@@ -379,6 +382,7 @@
             onAuthStateChanged,
             signOut,
             updateProfile,
+            sendPasswordResetEmail,
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import {
             getFirestore,
@@ -409,6 +413,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- Variáveis de UI ---
         const loginContainer = document.getElementById('login-container');
         const appContainer = document.getElementById('app-container');
         const userDisplay = document.getElementById('user-display');
@@ -436,6 +441,18 @@
         const gestorMessage = document.getElementById('gestor-message');
         const editGestorMessageContainer = document.getElementById('edit-gestor-message-container');
         const editGestorMessage = document.getElementById('edit-gestor-message');
+
+        // --- Função Global para Recuperação de Senha ---
+        window.recuperarSenha = () => {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert("Digite seu e-mail no campo de login primeiro.");
+                return;
+            }
+            sendPasswordResetEmail(auth, email)
+                .then(() => alert("E-mail de redefinição enviado! Verifique sua caixa de entrada."))
+                .catch((error) => alert("Erro: " + error.message));
+        };
 
         let lembretesAtivos = [];
         let currentUser = null;
@@ -838,7 +855,6 @@
             }
         });
 
-        // Correção de filtro mantida para Leads Reatribuídos
         function escutarContatos() {
             if (!currentUser) return;
             contatosList.innerHTML = '<p class="text-gray-400">Carregando...</p>';
@@ -892,7 +908,6 @@
                     const responsavelTelefone = (
                         contato.telefoneResponsavel || ''
                     ).toLowerCase();
-                    // Nova linha adicionada:
                     const posicao = (contato.posicao || '').toLowerCase();
 
                     return (
@@ -901,7 +916,6 @@
                         telefone.includes(termoBusca) ||
                         responsavelNome.includes(termoBusca) ||
                         responsavelTelefone.includes(termoBusca) ||
-                        // Nova condição adicionada:
                         posicao.includes(termoBusca)
                     );
                 });
@@ -913,7 +927,6 @@
             avisoContainer.innerHTML = '';
             if (contatosAguardando > 0) {
                 const plural = contatosAguardando > 1 ? 's' : '';
-                // Estilo do aviso conforme a imagem
                 avisoContainer.innerHTML = `<div class="bg-yellow-900/40 border border-yellow-600 text-yellow-300 px-4 py-3 rounded-lg relative fade-in" role="alert"><strong class="font-bold">Atenção!</strong><span class="block sm:inline"> Você tem ${contatosAguardando} contato${plural} aguardando resposta.</span></div>`;
             }
 
@@ -952,7 +965,6 @@
                     statusTextClass = 'text-yellow-400';
                 }
 
-                // Estilo do Card Principal conforme a imagem
                 card.className = `bg-gray-700/70 p-4 rounded-lg shadow-lg fade-in border-l-4 ${statusClass} flex justify-between gap-4`;
 
                 let detalhes = '';
@@ -1053,7 +1065,6 @@
                     )
                 ) {
                     try {
-                        const contato = meusContatos.find((c) => c.id === docId);
                         const novoRegistroHistorico = {
                             status: 'Aguardando',
                             dataHora: new Date(),
@@ -1103,7 +1114,6 @@
             editForm.elements['edit-motivo-standby'].value = contato.motivoStandby || '';
             editForm.elements['edit-data-lembrete'].value = contato.dataLembrete || '';
 
-            // Exibir a mensagem do Gestor no Modal de Edição
             const msgGestor = contato.mensagemGestor;
             if (msgGestor) {
                 document.getElementById('edit-gestor-message-container').style.display = 'block';
@@ -1126,7 +1136,6 @@
 
         function toggleEditCampos() {
             const status = document.getElementById('edit-status').value;
-            // Corrigido para alternar corretamente entre os campos no modal de edição
             document.getElementById('edit-campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
             document.getElementById('edit-campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
             document.getElementById('edit-campos-falha').classList.toggle('hidden', status !== 'Falha');
@@ -1222,15 +1231,12 @@
 
         function toggleStatusFields() {
             const status = document.querySelector('input[name="status"]:checked').value;
-            // Oculta/mostra as seções de campos adicionais no formulário de NOVO contato
             document.getElementById('campos-aguardando').classList.toggle('hidden', status !== 'Aguardando');
             document.getElementById('campos-sucesso').classList.toggle('hidden', status !== 'Sucesso');
             document.getElementById('campos-falha').classList.toggle('hidden', status !== 'Falha');
             document.getElementById('campos-reuniao').classList.toggle('hidden', status !== 'Reunião Agendada');
             document.getElementById('campos-standby').classList.toggle('hidden', status !== 'Standby');
 
-            // Oculta a mensagem do gestor no formulário principal ao mudar o status 
-            // (ela só é relevante para leads reatribuídos que estão em "Aguardando")
             if (status !== 'Aguardando' && gestorMessageContainer) {
                  gestorMessageContainer.style.display = 'none';
             }
